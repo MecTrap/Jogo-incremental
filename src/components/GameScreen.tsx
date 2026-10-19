@@ -33,6 +33,7 @@ export function GameScreen({ game, onOpen, onMenu }: GameScreenProps) {
           onSelect={setSelection}
           onBuyUnit={(unitId) => game.buyUnit(unitId, 1)}
           onBuyStation={game.buyStation}
+          onBuyAutoClicker={game.buyAutoClicker}
         />
         <WorldMap
           state={state}

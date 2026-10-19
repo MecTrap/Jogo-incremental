@@ -47,6 +47,18 @@ export interface StationDef {
   group: 'estacoes' | 'outros'
 }
 
+/** Item da loja de automação: conjura o Cemitério sozinho. */
+export interface AutoClickerDef {
+  id: string
+  name: string
+  role: string
+  description: string
+  sigil: string
+  cost: number
+  costGrowth: number
+  clicksPerSecond: number
+}
+
 export interface OfflineAward {
   ms: number
   gain: Rates
@@ -59,6 +71,7 @@ export interface GameState {
   totalGold: number
   units: Record<string, number>
   stations: Record<string, number>
+  autoClickers: Record<string, number>
   upgrades: string[]
   clicks: number
   purchases: number

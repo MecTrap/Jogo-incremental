@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ALL_UPGRADES, OBJECTIVES, STATION_BY_ID, UNIT_BY_ID } from './data'
+import { ALL_UPGRADES, AUTO_CLICKER_BY_ID, OBJECTIVES, STATION_BY_ID, UNIT_BY_ID } from './data'
 import {
   affordableCount,
+  autoClickerCost,
   clickPower,
   levelRequirement,
   productionRates,
@@ -23,6 +24,7 @@ export function createInitialState(): GameState {
     totalGold: 0,
     units: {},
     stations: {},
+    autoClickers: {},
     upgrades: [],
     clicks: 0,
     purchases: 0,
@@ -73,6 +75,7 @@ function loadState(): GameState {
       ...saved,
       units: { ...saved.units },
       stations: { ...saved.stations },
+      autoClickers: { ...saved.autoClickers },
       upgrades: Array.isArray(saved.upgrades) ? [...saved.upgrades] : [],
       offlineAward: null,
     }
@@ -110,6 +113,7 @@ export interface GameApi {
   conjure: () => void
   buyUnit: (unitId: string, amount: number | 'max') => void
   buyStation: (stationId: string) => void
+  buyAutoClicker: (itemId: string) => void
   buyUpgrade: (upgradeId: string) => void
   evolve: (unitId: string) => void
   toggleSound: () => void
@@ -141,7 +145,7 @@ export function useGame(): GameApi {
     }
   }, [])
 
-  // Produção passiva.
+  // Produção passiva (criaturas + loja de automação).
   useEffect(() => {
     let last = performance.now()
     const timer = window.setInterval(() => {
@@ -183,6 +187,7 @@ export function useGame(): GameApi {
         ...previous,
         units: { ...previous.units },
         stations: { ...previous.stations },
+        autoClickers: { ...previous.autoClickers },
         upgrades: [...previous.upgrades],
       }
       change(draft)
@@ -231,6 +236,23 @@ export function useGame(): GameApi {
         draft.gold -= cost
         draft.stations[stationId] = level + 1
         grantXp(draft, 10)
+      })
+    },
+    [mutate],
+  )
+
+  const buyAutoClicker = useCallback(
+    (itemId: string) => {
+      mutate((draft) => {
+        const item = AUTO_CLICKER_BY_ID[itemId]
+        if (!item) return
+        const owned = draft.autoClickers[itemId] ?? 0
+        const cost = autoClickerCost(item, owned)
+        if (draft.essence < cost) return
+        draft.essence -= cost
+        draft.autoClickers[itemId] = owned + 1
+        draft.purchases += 1
+        grantXp(draft, 12)
       })
     },
     [mutate],
@@ -302,6 +324,7 @@ export function useGame(): GameApi {
     conjure,
     buyUnit,
     buyStation,
+    buyAutoClicker,
     buyUpgrade,
     evolve,
     toggleSound,

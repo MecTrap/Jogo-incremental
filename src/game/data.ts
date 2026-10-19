@@ -1,5 +1,6 @@
 import type {
   AchievementDef,
+  AutoClickerDef,
   ObjectiveDef,
   ResourceKey,
   StationDef,
@@ -228,8 +229,56 @@ export const STATIONS: StationDef[] = [
   },
 ]
 
+/**
+ * Loja de automação: comprada com essência, cada item conjura o Cemitério
+ * sozinho — os ossos por segundo acompanham o seu poder de conjuração.
+ */
+export const AUTO_CLICKERS: AutoClickerDef[] = [
+  {
+    id: 'mao',
+    name: 'Mão Cadavérica',
+    role: 'Conjuração automática',
+    description: 'Uma mão cortada do próprio cemitério. Conjura sozinha, sem pausa e sem reclamar.',
+    sigil: 'hand',
+    cost: 5,
+    costGrowth: 1.45,
+    clicksPerSecond: 1,
+  },
+  {
+    id: 'servo',
+    name: 'Servo Espectral',
+    role: 'Conjuração automática',
+    description: 'Um espírito acorrentado ao vale. Trabalha a vigília inteira por um punhado de essência.',
+    sigil: 'spirit',
+    cost: 40,
+    costGrowth: 1.5,
+    clicksPerSecond: 4,
+  },
+  {
+    id: 'cultista',
+    name: 'Cultista Silencioso',
+    role: 'Conjuração automática',
+    description: 'Aprendizes vivos que trocaram a voz pelo ofício. Conjuram em fila, sem errar um gesto.',
+    sigil: 'person',
+    cost: 300,
+    costGrowth: 1.55,
+    clicksPerSecond: 15,
+  },
+  {
+    id: 'lich-menor',
+    name: 'Lich Menor',
+    role: 'Conjuração automática',
+    description: 'Um necromante que já venceu a própria morte. Conjura enquanto você dorme.',
+    sigil: 'necromancer',
+    cost: 2_000,
+    costGrowth: 1.6,
+    clicksPerSecond: 60,
+  },
+]
+
 export const UNIT_BY_ID: Record<string, UnitDef> = Object.fromEntries(UNITS.map((unit) => [unit.id, unit]))
 export const STATION_BY_ID: Record<string, StationDef> = Object.fromEntries(STATIONS.map((station) => [station.id, station]))
+export const AUTO_CLICKER_BY_ID: Record<string, AutoClickerDef> = Object.fromEntries(AUTO_CLICKERS.map((item) => [item.id, item]))
 export const ALL_UPGRADES: UnitUpgradeDef[] = UNITS.flatMap((unit) => unit.upgrades)
 
 export const RESOURCES: Record<ResourceKey, { label: string; sigil: string }> = {

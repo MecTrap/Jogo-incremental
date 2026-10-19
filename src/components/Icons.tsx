@@ -91,6 +91,20 @@ const SHAPES: Record<string, ReactElement> = {
       <circle cx="12" cy="13" r="1.3" fill="currentColor" stroke="none" />
     </>
   ),
+  hand: (
+    <>
+      <path d="M8.4 12.6V5.6a1.3 1.3 0 0 1 2.6 0v5.4" />
+      <path d="M11 10.8V4.4a1.3 1.3 0 0 1 2.6 0v6.4" />
+      <path d="M13.6 11V6.2a1.3 1.3 0 0 1 2.6 0v7.2a7 7 0 0 1-7 7h-1a4 4 0 0 1-3.3-1.7l-1.6-2.5a1.3 1.3 0 0 1 2.1-1.5l1.8 2.1" />
+    </>
+  ),
+  spirit: (
+    <>
+      <path d="M19 20.4V12a7 7 0 0 0-14 0v8.4l2.3-1.7 2.1 1.7 2.6-1.9L14.6 20.4l2.1-1.7Z" />
+      <circle cx="9.9" cy="11" r="1.1" fill="currentColor" stroke="none" />
+      <circle cx="14.1" cy="11" r="1.1" fill="currentColor" stroke="none" />
+    </>
+  ),
   coin: (
     <>
       <circle cx="12" cy="12" r="8.4" />

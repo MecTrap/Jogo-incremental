@@ -1,5 +1,13 @@
-import { STATIONS, UNITS } from './data'
-import type { GameState, Rates, ResourceKey, StationDef, StationEffect, UnitDef } from './types'
+import { AUTO_CLICKERS, STATIONS, UNITS } from './data'
+import type {
+  AutoClickerDef,
+  GameState,
+  Rates,
+  ResourceKey,
+  StationDef,
+  StationEffect,
+  UnitDef,
+} from './types'
 
 /** Ossos ganhos por conjuração antes de qualquer melhoria. */
 export const BASE_CLICK_BONES = 1
@@ -43,6 +51,14 @@ export function unitProduction(state: GameState, unit: UnitDef): number {
   return raw * stationEffectMultiplier(state, unit.produces) * levelMultiplier(state.level)
 }
 
+/** Conjurações automáticas por segundo, somando toda a loja. */
+export function autoClicksPerSecond(state: GameState): number {
+  return AUTO_CLICKERS.reduce(
+    (total, item) => total + (state.autoClickers[item.id] ?? 0) * item.clicksPerSecond,
+    0,
+  )
+}
+
 export function productionRates(state: GameState): Rates {
   const global = levelMultiplier(state.level)
   const multipliers: Record<ResourceKey, number> = {
@@ -62,6 +78,10 @@ export function productionRates(state: GameState): Rates {
   rates.gold *= multipliers.gold
   rates.bones *= multipliers.bones
   rates.essence *= multipliers.essence
+
+  // Automação: cada conjuração automática rende os mesmos ossos de um clique manual.
+  rates.bones += autoClicksPerSecond(state) * clickPower(state)
+
   return rates
 }
 
@@ -87,6 +107,10 @@ export function stationCost(station: StationDef, level: number): number {
 
 export function stationBonusPercent(station: StationDef, level: number): number {
   return Math.round(level * station.bonusPerLevel * 100)
+}
+
+export function autoClickerCost(item: AutoClickerDef, owned: number): number {
+  return Math.round(item.cost * Math.pow(item.costGrowth, owned))
 }
 
 export function totalUnits(state: GameState): number {
