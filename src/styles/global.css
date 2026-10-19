@@ -1,0 +1,265 @@
+:root {
+  --void: #050a0d;
+  --void-soft: #090d11;
+  --panel: rgba(8, 17, 21, 0.86);
+  --panel-solid: #0b1419;
+  --panel-raised: #0f1c22;
+  --border: #1a2a35;
+  --border-strong: #27414e;
+  --teal: #00f0d2;
+  --teal-soft: #00c4ab;
+  --teal-deep: #008877;
+  --teal-glow: rgba(0, 240, 210, 0.34);
+  --text: #d1d1d1;
+  --text-strong: #eeeae0;
+  --text-dim: #8b9ba1;
+  --gold: #ffcc00;
+  --bone: #e8e4d9;
+  --essence: #b98cff;
+  --danger: #ff6b6b;
+  --font-display: 'Cinzel', 'Palatino Linotype', 'Times New Roman', serif;
+  --font-menu: 'Spectral', Georgia, 'Times New Roman', serif;
+  --font-hud: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--void);
+  color: var(--text);
+  font-family: var(--font-hud);
+  font-size: 14px;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e3541;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--teal-deep);
+}
+
+/* ---------- Botões ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(0, 136, 119, 0.22), rgba(6, 14, 18, 0.9));
+  color: var(--text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 600;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease, transform 0.08s ease;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--teal);
+  color: #fff;
+  box-shadow: 0 0 12px var(--teal-glow), inset 0 0 10px rgba(0, 240, 210, 0.12);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.btn--ghost {
+  background: rgba(9, 18, 23, 0.7);
+  border-color: var(--border);
+}
+
+.btn--gold {
+  background: linear-gradient(180deg, rgba(255, 204, 0, 0.2), rgba(20, 15, 4, 0.9));
+  border-color: rgba(255, 204, 0, 0.4);
+}
+
+.btn--gold:hover:not(:disabled) {
+  border-color: var(--gold);
+  box-shadow: 0 0 12px rgba(255, 204, 0, 0.28);
+}
+
+.btn--danger {
+  background: linear-gradient(180deg, rgba(255, 107, 107, 0.18), rgba(24, 8, 8, 0.9));
+  border-color: rgba(255, 107, 107, 0.4);
+}
+
+.btn--danger:hover:not(:disabled) {
+  border-color: var(--danger);
+  box-shadow: 0 0 12px rgba(255, 107, 107, 0.25);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--small {
+  padding: 5px 9px;
+  font-size: 10px;
+}
+
+/* ---------- Painéis ---------- */
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(3px);
+}
+
+.panel__title {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+/* ---------- Barras ---------- */
+
+.bar {
+  position: relative;
+  height: 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  background: #05100f;
+  overflow: hidden;
+}
+
+.bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal-deep), var(--teal));
+  box-shadow: 0 0 10px var(--teal-glow);
+  transition: width 0.3s ease;
+}
+
+/* ---------- Recursos ---------- */
+
+.amount {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.amount--gold {
+  color: var(--gold);
+}
+
+.amount--bones {
+  color: var(--bone);
+}
+
+.amount--essence {
+  color: var(--essence);
+}
+
+.amount--rate {
+  color: var(--text-dim);
+  font-weight: 500;
+  font-size: 11px;
+}
+
+/* ---------- Diversos ---------- */
+
+.tag {
+  display: inline-block;
+  padding: 2px 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.tag--teal {
+  border-color: var(--teal-deep);
+  color: var(--teal);
+}
+
+.sigil {
+  display: grid;
+  place-items: center;
+  flex: none;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  background: radial-gradient(circle at 50% 30%, rgba(0, 240, 210, 0.16), rgba(4, 10, 13, 0.95));
+  color: var(--teal-soft);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.85);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -46px) scale(1.05);
+  }
+}

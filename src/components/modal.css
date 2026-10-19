@@ -1,0 +1,174 @@
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 5, 7, 0.78);
+  backdrop-filter: blur(3px);
+}
+
+.modal__box {
+  position: relative;
+  width: min(680px, 100%);
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: linear-gradient(180deg, #0b161b, #060d11);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.7), 0 0 40px rgba(0, 240, 210, 0.08);
+}
+
+.modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal__title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-strong);
+}
+
+.modal__subtitle {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.modal__close {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-dim);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.modal__close:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.modal__body {
+  padding: 18px;
+  overflow-y: auto;
+}
+
+.modal__section + .modal__section {
+  margin-top: 20px;
+}
+
+.modal__label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 10px;
+}
+
+.modal__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px dashed rgba(39, 65, 78, 0.55);
+}
+
+.modal__row:last-child {
+  border-bottom: none;
+}
+
+.modal__row p {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+
+.achievement {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: rgba(9, 18, 23, 0.55);
+}
+
+.achievement--locked {
+  opacity: 0.5;
+}
+
+.achievement__sigil {
+  width: 40px;
+  height: 40px;
+}
+
+.achievement__name {
+  font-size: 13px;
+  color: var(--text-strong);
+}
+
+.achievement__desc {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+
+.achievement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.objective-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: rgba(9, 18, 23, 0.55);
+}
+
+.objective-card--done {
+  border-color: var(--teal-deep);
+}
+
+.objective-card__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-strong);
+  margin-bottom: 8px;
+}
+
+.objective-card__reward {
+  font-size: 11px;
+  color: var(--gold);
+}
+
+.credits-text {
+  font-family: var(--font-menu);
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-dim);
+}
+
+.credits-text strong {
+  color: var(--text-strong);
+  font-weight: 600;
+}
