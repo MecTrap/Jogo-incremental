@@ -15,4 +15,6 @@ Abra essa pasta pelo Unity Hub com a Unity **6000.6.8f1**, carregue a cena **Ass
 
 Ela inclui produção de recursos, monstros, evolução, automação, missões, conquistas, salvamento local e produção offline. A interface tem botões com feedback visual, painel de detalhes retrátil, barras de rolagem temáticas, menu integrado à arte, saldos atualizados e barra de XP.
 
+O download atual inclui ícones próprios para os seis monstros e as quatro moedas, duas evoluções visuais para cada estrutura, a trilha **Relógio de Areia** com controle de volume e uma economia mais lenta. O **Prestígio** libera no nível 10 e concede **Almas Eternas**, cada uma com +10% de geração permanente.
+
 Veja as [instruções do projeto Unity](NecromanteIncUnity/README.md) para jogar, editar e gerar um executável.

@@ -7,7 +7,15 @@
 
 .world {
     flex-grow: 1;
-    background-size: cover;
+    overflow: hidden;
+    background-color: #101e21;
+}
+
+.world-map {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
 }
@@ -55,6 +63,7 @@
 .gold { color: #efcf8a; white-space: normal; margin-bottom: 6px; }
 .bone { color: #eee3cc; }
 .essence { color: #cdb6f6; }
+.souls { color: #b6e2dd; white-space: normal; margin-bottom: 8px; }
 
 .button {
     background-color: #253638;
@@ -136,7 +145,16 @@
 .objective .eyebrow { margin-top: 0; margin-bottom: 2px; font-size: 10px; }
 .objective .copy { margin-bottom: 0; font-size: 12px; }
 .wallet, .header-actions { flex-direction: row; flex-wrap: wrap; max-width: 100%; }
-.wallet .unity-label { margin: 0 3px; padding: 4px 8px; background-color: #1c2b2e; border-radius: 5px; }
+.resource-balance {
+    flex-direction: row;
+    align-items: center;
+    margin: 0 3px;
+    padding: 4px 6px;
+    background-color: #1c2b2e;
+    border-radius: 5px;
+}
+.resource-balance .unity-label { margin: 0; padding: 0; font-size: 12px; }
+.currency-icon { width: 28px; height: 28px; margin-right: 5px; flex-shrink: 0; }
 .header-actions { margin-left: auto; }
 .header-actions .button { font-size: 12px; padding-left: 8px; padding-right: 8px; }
 .board { flex-direction: row; flex-grow: 1; min-height: 0; }
@@ -224,6 +242,71 @@
 }
 
 .card { background-color: #1c2e31; padding: 7px; margin-bottom: 7px; border-radius: 6px; }
+.button.monster-pick {
+    position: relative;
+    min-height: 54px;
+    padding-left: 55px;
+    -unity-text-align: middle-left;
+    -unity-font-style: bold;
+}
+.monster-icon { width: 64px; height: 64px; flex-shrink: 0; }
+.monster-pick .monster-icon {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 46px;
+    height: 46px;
+}
+.monster-hero { flex-direction: row; align-items: center; margin-bottom: 8px; }
+.monster-hero .monster-icon { width: 76px; height: 76px; margin-right: 8px; }
+.monster-identity { flex-grow: 1; flex-shrink: 1; min-width: 0; }
+.station-art { width: 100%; height: 100%; transition: opacity 300ms ease-out, scale 300ms ease-out; }
+.monster-pick .station-art {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 46px;
+    height: 46px;
+}
+.station-preview { height: 150px; margin-bottom: 8px; background-color: #112023; border-radius: 7px; }
+.station-art.station-evolved { opacity: 0.7; scale: 1.08 1.08; }
+.button.station-marker {
+    position: absolute;
+    translate: -50% -82%;
+    width: 34%;
+    height: 30%;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    background-color: transparent;
+    border-color: transparent;
+}
+.station-marker .station-art { height: 86%; flex-shrink: 1; }
+.station-map-label {
+    flex-shrink: 0;
+    max-width: 100%;
+    padding: 3px 6px;
+    border-radius: 5px;
+    background-color: rgba(12, 24, 26, 0.94);
+    color: #e1ddc9;
+    font-size: 11px;
+    white-space: normal;
+    -unity-text-align: middle-center;
+}
+.necromante .button.station-marker,
+.necromante .button.station-marker:hover,
+.necromante .button.station-marker:focus,
+.necromante .button.station-marker:active,
+.necromante .button.station-marker.active,
+.necromante .button.station-marker.click-flash {
+    background-color: transparent;
+    background-image: none;
+    border-width: 0;
+}
+.button.station-marker.active .station-map-label,
+.button.station-marker:hover .station-map-label,
+.button.station-marker:focus .station-map-label { background-color: #285351; color: #fff0ce; }
 .world { min-width: 0; }
 .offline {
     position: absolute;
@@ -236,17 +319,9 @@
     max-width: 92%;
 }
 .offline { right: 12px; bottom: 65px; }
-.button.hotspot {
-    position: absolute;
-    translate: -50% -50%;
-    max-width: 140px;
-    background-color: rgba(19, 33, 35, 0.94);
-    font-size: 12px;
-}
-.button.hotspot.active, .button.hotspot:hover { background-color: #285351; }
 .button.conjure { position: absolute; bottom: 12px; left: 12px; right: 12px; min-height: 40px; }
 
-.button.click-flash, .button.hotspot.click-flash {
+.button.click-flash {
     background-color: #43625c;
     border-color: #a8d7cb;
     transition-duration: 0s;
@@ -257,7 +332,7 @@
     border-color: #fff0c8;
 }
 
-.button:active, .button.hotspot:active {
+.button:active {
     background-color: #192827;
     border-color: #475d58;
     transition-duration: 0s;
@@ -308,8 +383,11 @@
 }
 
 .dialog { height: 500px; }
+.music-volume { margin: 10px 6px 18px 6px; min-height: 24px; }
+.music-volume .unity-base-slider__tracker { background-color: #426461; }
+.music-volume .unity-base-slider__dragger { background-color: #efcf8a; border-color: #efcf8a; }
 .dialog-heading { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .compact .side, .compact .details { width: 225px; }
 .details.details-collapsed { width: 40px; }
-.compact .hotspot { max-width: 90px; font-size: 10px; padding-left: 3px; padding-right: 3px; }
 .compact .objective { width: 205px; }
+.compact .station-map-label { font-size: 10px; padding: 2px 3px; }

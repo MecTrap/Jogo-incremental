@@ -9,6 +9,7 @@ namespace NecromanteInc
     public sealed class NecromanteUI : MonoBehaviour
     {
         private const string SaveKey = "necromante-inc.unity.v1";
+        private const string MusicVolumeKey = "necromante-inc.music-volume";
         private const float MenuArtWidth = 1536f;
         private const float MenuArtHeight = 1024f;
         private static readonly CultureInfo Locale = CultureInfo.GetCultureInfo("pt-BR");
@@ -16,7 +17,12 @@ namespace NecromanteInc
         private static readonly string[] Tabs = { "Monstros", "Estações", "Loja" };
         private static readonly Vector2[] Hotspots =
         {
-            new(16, 68), new(34, 40), new(72, 18), new(74, 47), new(25, 14), new(89, 68)
+            new(34, 91), // Cemitério
+            new(24, 60), // Cripta
+            new(82, 61), // Acampamento
+            new(57, 45), // Forja
+            new(28, 34), // Torre
+            new(67, 78)  // Portal
         };
 
         private readonly List<Action> bindings = new();
@@ -25,8 +31,9 @@ namespace NecromanteInc
         private AudioClip conjureSound;
         private Texture2D menuArt, worldArt;
         private PanelSettings panel;
-        private AudioSource audioSource;
-        private bool playing, stationSelected, confirmReset, detailsCollapsed;
+        private AudioSource audioSource, musicSource;
+        private float musicVolume;
+        private bool playing, stationSelected, confirmReset, confirmPrestige, detailsCollapsed;
         private int tab, selection;
         private string modal;
         private double offlineSeconds;
@@ -73,13 +80,20 @@ namespace NecromanteInc
             root.styleSheets.Add(Resources.Load<StyleSheet>("GameTheme"));
             root.RegisterCallback<GeometryChangedEvent>(AdaptLayout);
             menuArt = Resources.Load<Texture2D>("menu-bg");
-            worldArt = Resources.Load<Texture2D>("world-bg");
+            worldArt = Resources.Load<Texture2D>("world-ground");
             Camera camera = gameObject.AddComponent<Camera>();
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.05f, 0.08f, 0.1f);
             gameObject.AddComponent<AudioListener>();
             audioSource = gameObject.AddComponent<AudioSource>();
             audioSource.playOnAwake = false;
+            musicVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MusicVolumeKey, 0.18f));
+            musicSource = gameObject.AddComponent<AudioSource>();
+            musicSource.playOnAwake = false;
+            musicSource.loop = true;
+            musicSource.spatialBlend = 0;
+            musicSource.volume = 0;
+            musicSource.clip = Resources.Load<AudioClip>("Audio/relogio-de-areia");
             conjureSound = CreateConjureSound();
             lastTick = lastSave = Time.realtimeSinceStartupAsDouble;
             Draw();
@@ -88,6 +102,7 @@ namespace NecromanteInc
         private void Update()
         {
             if (game == null) return;
+            UpdateMusic();
             double now = Time.realtimeSinceStartupAsDouble;
             if (now - lastTick >= 0.1)
             {
@@ -103,6 +118,18 @@ namespace NecromanteInc
         }
 
         private static long Now() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+        private void UpdateMusic()
+        {
+            if (musicSource.clip == null) return;
+            bool audible = playing && State.sound && musicVolume > 0;
+            if (audible && !musicSource.isPlaying) musicSource.Play();
+
+            float target = audible ? musicVolume : 0;
+            musicSource.volume = Mathf.Lerp(musicSource.volume, target, 1 - Mathf.Exp(-4 * Time.unscaledDeltaTime));
+            if (!audible && musicSource.isPlaying && musicSource.volume < 0.001f)
+                musicSource.Stop();
+        }
 
         private void Save()
         {
@@ -217,10 +244,12 @@ namespace NecromanteInc
 
             DrawObjective(header);
             VisualElement wallet = Box(header, "wallet");
-            LiveLabel(wallet, () => $"Ouro\n{N(State.gold)}  (+{N(rates.gold)}/s)", "gold");
-            LiveLabel(wallet, () => $"Ossos\n{N(State.bones)}  (+{N(rates.bones)}/s)", "bone");
-            LiveLabel(wallet, () => $"Essência\n{N(State.essence)}  (+{N(rates.essence)}/s)", "essence");
+            ResourceBalance(wallet, "gold", () => $"Ouro\n{N(State.gold)}  (+{N(rates.gold)}/s)", "gold");
+            ResourceBalance(wallet, "bones", () => $"Ossos\n{N(State.bones)}  (+{N(rates.bones)}/s)", "bone");
+            ResourceBalance(wallet, "essence", () => $"Essência\n{N(State.essence)}  (+{N(rates.essence)}/s)", "essence");
+            ResourceBalance(wallet, "eternal-souls", () => $"Almas Eternas\n{N(State.eternalSouls)}  (+{N(State.eternalSouls * (Game.SoulBonus * 100))}%)", "souls");
             VisualElement actions = Box(header, "header-actions");
+            Button(actions, "Prestígio", () => Open("Prestígio"));
             Button(actions, "Conquistas", () => Open("Conquistas"));
             Button(actions, "Missões", () => Open("Missões"));
             Button(actions, "Configurações", () => Open("Configurações"));
@@ -265,8 +294,10 @@ namespace NecromanteInc
                     int index = i;
                     Unit unit = game.Data.units[i];
                     VisualElement row = Box(list, "card");
-                    Button(row, unit.name, () => Select(index, false),
+                    Button pick = Button(row, unit.name, () => Select(index, false),
                         !stationSelected && selection == index ? "active" : "pick");
+                    pick.AddToClassList("monster-pick");
+                    MonsterIcon(pick, unit);
                     LiveLabel(row, () => $"{State.units[index]} em posse  •  +{N(game.PerUnit(index))} {Resource(unit.produces)}/s cada", "muted");
                     LiveButton(row, () => $"Comprar · {N(game.UnitCost(index))} ossos",
                         () => State.bones >= game.UnitCost(index), () => game.BuyUnit(index, false));
@@ -282,11 +313,15 @@ namespace NecromanteInc
                     if (i > 0 && station.group != game.Data.stations[i - 1].group)
                         Label(list, "Outros locais", "eyebrow");
                     VisualElement row = Box(list, "card");
-                    Button(row, station.name, () => Select(index, true),
+                    Button pick = Button(row, station.name, () => Select(index, true),
                         stationSelected && selection == index ? "active" : "pick");
-                    LiveLabel(row, () => $"Nível {State.stations[index]}  •  {station.role}", "muted");
+                    pick.AddToClassList("monster-pick");
+                    StationArt(pick, index);
+                    LiveLabel(row, () => $"{StationFormName(index)}  •  Nv {State.stations[index]}", "muted");
+                    LiveLabel(row, () => $"{game.StationForm(index)}/2 evoluções  •  {station.role}", "muted");
                     LiveButton(row, () => $"Melhorar · {N(game.StationCost(index))} ouro",
                         () => State.gold >= game.StationCost(index), () => game.BuyStation(index));
+                    Button(row, "Ver aprimoramentos", () => Select(index, true));
                 }
             }
             else
@@ -309,21 +344,30 @@ namespace NecromanteInc
         private void DrawWorld(VisualElement board)
         {
             world = Box(board, "world");
-            world.style.backgroundImage = new StyleBackground(worldArt);
+            VisualElement map = Box(world, "world-map");
+            map.style.backgroundImage = new StyleBackground(worldArt);
+            world.RegisterCallback<GeometryChangedEvent>(evt =>
+            {
+                // Mantém os pontos das estruturas presos às mesmas clareiras em qualquer janela.
+                float availableHeight = Mathf.Max(0, evt.newRect.height - 62);
+                map.style.width = evt.newRect.width;
+                map.style.height = availableHeight;
+            });
             for (int i = 0; i < Hotspots.Length; i++)
             {
                 int index = i;
                 Station station = game.Data.stations[i];
-                var marker = Button(world, station.name, () =>
+                var marker = Button(map, "", () =>
                 {
                     Select(index, true);
                     if (index == 0) Conjure();
-                }, "hotspot");
+                }, "station-marker");
                 marker.tooltip = station.description;
                 marker.style.left = Length.Percent(Hotspots[i].x);
                 marker.style.top = Length.Percent(Hotspots[i].y);
                 marker.EnableInClassList("active", stationSelected && selection == index);
-                bindings.Add(() => marker.text = $"{station.name}\nNv {State.stations[index]}");
+                StationArt(marker, index);
+                LiveLabel(marker, () => $"{station.name}\n{StationFormName(index)} · Nv {State.stations[index]}", "station-map-label");
             }
             LiveButton(world, () => $"Conjurar   +{N(game.ClickPower)} ossos", () => true, Conjure, "conjure");
             if (offlineSeconds > 0)
@@ -374,23 +418,16 @@ namespace NecromanteInc
             int index = selection;
             if (stationSelected)
             {
-                Station station = game.Data.stations[index];
-                Label(detail, station.name, "heading");
-                Label(detail, station.role, "eyebrow");
-                Label(detail, station.description, "copy");
-                LiveLabel(detail, () =>
-                {
-                    int level = State.stations[index];
-                    return $"Nível {level}\nBônus atual  {StationBonus(station, level)}\nApós a melhoria  {StationBonus(station, level + 1)}";
-                }, "gold");
-                LiveButton(detail, () => $"Melhorar · {N(game.StationCost(index))} ouro",
-                    () => State.gold >= game.StationCost(index), () => game.BuyStation(index), "primary");
+                DrawStationDetails(detail, index);
                 return;
             }
 
             Unit unit = game.Data.units[index];
-            Label(detail, unit.name, "heading");
-            Label(detail, unit.role, "eyebrow");
+            VisualElement hero = Box(detail, "monster-hero");
+            MonsterIcon(hero, unit);
+            VisualElement identity = Box(hero, "monster-identity");
+            Label(identity, unit.name, "heading");
+            Label(identity, unit.role, "eyebrow");
             Label(detail, unit.description, "copy");
             LiveLabel(detail, () =>
             {
@@ -434,6 +471,7 @@ namespace NecromanteInc
         {
             modal = name;
             confirmReset = false;
+            confirmPrestige = false;
             Draw();
         }
 
@@ -450,6 +488,17 @@ namespace NecromanteInc
                 case "Configurações":
                     LiveButton(content, () => State.sound ? "Som: ligado" : "Som: desligado", () => true,
                         () => { State.sound = !State.sound; Save(); });
+                    Label musicLabel = Label(content, $"Volume da música · {Mathf.RoundToInt(musicVolume * 100)}%", "subheading");
+                    var musicSlider = new Slider(0, 100) { value = musicVolume * 100 };
+                    musicSlider.AddToClassList("music-volume");
+                    musicSlider.RegisterValueChangedCallback(evt =>
+                    {
+                        musicVolume = Mathf.Clamp01(evt.newValue / 100);
+                        musicLabel.text = $"Volume da música · {Mathf.RoundToInt(musicVolume * 100)}%";
+                        PlayerPrefs.SetFloat(MusicVolumeKey, musicVolume);
+                        PlayerPrefs.Save();
+                    });
+                    content.Add(musicSlider);
                     Button(content, "Salvar agora", () =>
                     {
                         Save();
@@ -458,7 +507,7 @@ namespace NecromanteInc
                     });
                     if (confirmReset)
                     {
-                        Label(content, "Apagar todo o progresso deste jogo?", "copy");
+                        Label(content, "Apagar todo o progresso, incluindo as Almas Eternas e os bônus permanentes?", "copy");
                         Button(content, "Apagar progresso", () =>
                         {
                             game = new Game(game.Data);
@@ -470,6 +519,9 @@ namespace NecromanteInc
                     }
                     else
                         Button(content, "Redefinir progresso", () => { confirmReset = true; Draw(); }, "danger");
+                    break;
+                case "Prestígio":
+                    DrawPrestige(content);
                     break;
                 case "Conquistas":
                     foreach (Achievement achievement in game.Data.achievements)
@@ -512,12 +564,133 @@ namespace NecromanteInc
             }
         }
 
+        private void DrawPrestige(VisualElement content)
+        {
+            Label(content, "Renascimento do reino", "subheading");
+            Label(content, $"Disponível a partir do nível {Game.PrestigeLevel}. Cada Alma Eterna concede +{N(Game.SoulBonus * 100)}% de geração permanente para ouro, ossos, essência e conjurações.", "copy");
+            LiveLabel(content, () => $"Almas Eternas  {N(State.eternalSouls)}\nBônus permanente  +{N(State.eternalSouls * (Game.SoulBonus * 100))}%\nRenascimentos  {State.prestigeCount}", "souls");
+            LiveLabel(content, () => game.CanPrestige ? "Renascimento disponível" :
+                $"Nível {State.level}/{Game.PrestigeLevel} · continue desenvolvendo o reino.", "gold");
+            LiveLabel(content, () => $"Ouro produzido neste ciclo  {N(State.totalGold)}\nRecompensa atual  +{N(game.PrestigeGain)} Almas Eternas\n" +
+                $"Bônus após renascer  +{N((State.eternalSouls + game.PrestigeGain) * (Game.SoulBonus * 100))}%", "copy");
+            Label(content, "Produzir mais ouro e alcançar níveis mais altos aumenta a recompensa. As Almas Eternas se acumulam a cada renascimento.", "muted");
+            if (confirmPrestige)
+            {
+                Label(content, "Confirmar o renascimento? Ouro, ossos, essência, nível, XP, monstros, estações, aprimoramentos, automação e missões deste ciclo voltam ao início. Suas Almas Eternas e configurações de som são preservadas.", "copy");
+                LiveButton(content, () => $"Confirmar · +{N(game.PrestigeGain)} Almas Eternas",
+                    () => game.CanPrestige, () =>
+                    {
+                        if (!game.Prestige()) return;
+                        offlineSeconds = 0;
+                        selection = 0;
+                        stationSelected = false;
+                        tab = 0;
+                        playing = true;
+                        Save();
+                        Open(null);
+                    }, "primary");
+                Button(content, "Cancelar", () => Open("Prestígio"));
+            }
+            else
+                LiveButton(content, () => game.CanPrestige ? "Preparar renascimento" : $"Requer nível {Game.PrestigeLevel}",
+                    () => game.CanPrestige, () => { confirmPrestige = true; Draw(); }, "primary");
+        }
+
         private string Wallet() => $"{N(State.gold)} ouro  •  {N(State.bones)} ossos  •  {N(State.essence)} essência";
         private static string Resource(string key) => key == "gold" ? "ouro" : key == "bones" ? "ossos" : "essência";
 
-        private static string StationBonus(Station station, int level) =>
-            station.effect == "click" ? $"+{N(level * station.bonusPerLevel)} ossos base por conjuração" :
-                $"+{N(level * station.bonusPerLevel * 100)}%";
+        private string StationBonus(int index, int level)
+        {
+            Station station = game.Data.stations[index];
+            double bonus = (1 + level * station.bonusPerLevel) * game.StationMultiplier(index) - 1;
+            return station.effect == "click" ? $"+{N(bonus)} ossos base por conjuração" : $"+{N(bonus * 100)}%";
+        }
+
+        private string StationFormName(int index) => game.Data.stations[index].forms[game.StationForm(index)];
+
+        private void StationArt(VisualElement parent, int index)
+        {
+            var image = new Image
+            {
+                image = Resources.Load<Texture2D>($"Stations/{game.Data.stations[index].id}"),
+                scaleMode = ScaleMode.ScaleToFit,
+                pickingMode = PickingMode.Ignore
+            };
+            image.AddToClassList("station-art");
+            parent.Add(image);
+            int previousForm = game.StationForm(index);
+            void SetForm(int form) => image.uv = new Rect(form / 3f, 0, 1f / 3f, 1);
+            SetForm(previousForm);
+            bindings.Add(() =>
+            {
+                int form = game.StationForm(index);
+                if (previousForm == form) return;
+                previousForm = form;
+                SetForm(form);
+                image.AddToClassList("station-evolved");
+                image.schedule.Execute(() => image.RemoveFromClassList("station-evolved")).StartingIn(350);
+            });
+        }
+
+        private void DrawStationDetails(VisualElement detail, int index)
+        {
+            Station station = game.Data.stations[index];
+            Label(detail, station.name, "heading");
+            StationArt(Box(detail, "station-preview"), index);
+            LiveLabel(detail, () => StationFormName(index), "subheading");
+            Label(detail, station.description, "copy");
+            LiveLabel(detail, () => $"Nível {State.stations[index]}\nBônus atual  {StationBonus(index, State.stations[index])}\n" +
+                $"Próximo nível  {StationBonus(index, State.stations[index] + 1)}", "gold");
+            LiveButton(detail, () => $"Subir nível · {N(game.StationCost(index))} ouro",
+                () => State.gold >= game.StationCost(index), () => game.BuyStation(index));
+            LiveLabel(detail, () => $"EVOLUÇÕES  {game.StationForm(index)}/2", "eyebrow");
+            Label(detail, "Compre os dois aprimoramentos da etapa em qualquer ordem para liberar a evolução. Escolha livremente qual estação desenvolver.", "copy");
+
+            for (int stage = 0; stage < 2; stage++)
+            {
+                int currentStage = stage;
+                VisualElement section = Box(detail, "station-stage");
+                bindings.Add(() => section.style.display = game.StationForm(index) == currentStage ?
+                    DisplayStyle.Flex : DisplayStyle.None);
+                for (int offset = 0; offset < 3; offset++)
+                {
+                    int slot = stage * 3 + offset;
+                    bool evolution = offset == 2;
+                    StationImprovement improvement = station.improvements[slot];
+                    VisualElement card = Box(section, "card");
+                    Label(card, evolution ? $"EVOLUÇÃO · {improvement.name}" : improvement.name, "subheading");
+                    Label(card, improvement.description, "copy");
+                    Label(card, $"+{N((improvement.multiplier - 1) * 100)}% {StationEffectLabel(station)}", "gold");
+                    LiveLabel(card, () => game.HasStationImprovement(index, slot) ? "Adquirido" :
+                        StationImprovementCost(improvement), "muted");
+                    if (evolution)
+                        LiveLabel(card, () => game.HasStationImprovement(index, slot - 2) &&
+                            game.HasStationImprovement(index, slot - 1) ? $"Nova aparência · {station.forms[currentStage + 1]}" :
+                            "Requer os dois aprimoramentos acima.", "copy");
+                    LiveButton(card, () => game.HasStationImprovement(index, slot) ? "Adquirido" :
+                        evolution ? "Evoluir estrutura" : "Comprar aprimoramento",
+                        () => game.CanBuyStationImprovement(index, slot),
+                        () => { if (game.BuyStationImprovement(index, slot)) Save(); }, evolution ? "primary" : null);
+                }
+            }
+            Label completed = Label(detail, "Todas as evoluções desbloqueadas. Os níveis da estação continuam disponíveis.", "gold");
+            bindings.Add(() => completed.style.display = game.StationForm(index) == 2 ? DisplayStyle.Flex : DisplayStyle.None);
+        }
+
+        private static string StationImprovementCost(StationImprovement improvement)
+        {
+            string cost = $"{N(improvement.gold)} ouro · {N(improvement.bones)} ossos";
+            return improvement.essence > 0 ? $"{cost} · {N(improvement.essence)} essência" : cost;
+        }
+
+        private static string StationEffectLabel(Station station) => station.effect switch
+        {
+            "gold" => "produção de ouro",
+            "bones" => "ganho de ossos",
+            "essence" => "produção de essência",
+            "click" => "poder da torre",
+            _ => "produção geral"
+        };
 
         private static string N(double number)
         {
@@ -553,10 +726,37 @@ namespace NecromanteInc
             return label;
         }
 
+        private static void MonsterIcon(VisualElement parent, Unit unit)
+        {
+            var icon = new Image
+            {
+                image = Resources.Load<Texture2D>($"Icons/Monsters/{unit.id}"),
+                scaleMode = ScaleMode.ScaleToFit,
+                pickingMode = PickingMode.Ignore,
+                tooltip = unit.name
+            };
+            icon.AddToClassList("monster-icon");
+            parent.Add(icon);
+        }
+
         private void LiveLabel(VisualElement parent, Func<string> text, string style)
         {
             Label label = Label(parent, "", style);
             bindings.Add(() => label.text = text());
+        }
+
+        private void ResourceBalance(VisualElement parent, string resource, Func<string> text, string style)
+        {
+            VisualElement balance = Box(parent, "resource-balance");
+            var icon = new Image
+            {
+                image = Resources.Load<Texture2D>($"Icons/Resources/{resource}"),
+                scaleMode = ScaleMode.ScaleToFit,
+                pickingMode = PickingMode.Ignore
+            };
+            icon.AddToClassList("currency-icon");
+            balance.Add(icon);
+            LiveLabel(balance, text, style);
         }
 
         private Button Button(VisualElement parent, string text, Action action, string style = null, Func<bool> enabled = null)

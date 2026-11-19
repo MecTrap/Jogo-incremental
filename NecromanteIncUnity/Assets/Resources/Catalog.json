@@ -6,8 +6,8 @@
       "role": "Servo ossudo",
       "description": "O primeiro soldado de qualquer necromante. Fraco, silencioso e infinitamente substituível.",
       "sigil": "skull",
-      "cost": 15,
-      "costGrowth": 1.15,
+      "cost": 25,
+      "costGrowth": 1.22,
       "produces": "gold",
       "baseRate": 0.5,
       "evolvesTo": "zumbi",
@@ -18,7 +18,7 @@
           "unitId": "esqueleto",
           "name": "Ferramentas Quebradas",
           "description": "Pás rachadas e picaretas gastas desenterram mais corpos por noite.",
-          "cost": 120,
+          "cost": 600,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 1
@@ -28,7 +28,7 @@
           "unitId": "esqueleto",
           "name": "Armadura Enferrujada",
           "description": "Chapas de um campo de batalha esquecido seguram os ossos unidos por mais tempo.",
-          "cost": 720,
+          "cost": 4800,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 6
@@ -38,7 +38,7 @@
           "unitId": "esqueleto",
           "name": "Ossos Reforçados",
           "description": "Fêmures banhados em resina sombria aguentam o primeiro golpe — e o segundo também.",
-          "cost": 4320,
+          "cost": 38400,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 11
@@ -48,7 +48,7 @@
           "unitId": "esqueleto",
           "name": "Machado Amaldiçoado",
           "description": "O aço sussurra nomes esquecidos e corta muito mais fundo.",
-          "cost": 25920,
+          "cost": 307200,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 16
@@ -61,8 +61,8 @@
       "role": "Carne apodrecida",
       "description": "Caroço de carne que não sente dor. Onde o esqueleto falha, o zumbi simplesmente continua andando.",
       "sigil": "zombie",
-      "cost": 120,
-      "costGrowth": 1.15,
+      "cost": 250,
+      "costGrowth": 1.24,
       "produces": "gold",
       "baseRate": 3,
       "evolvesTo": "cavaleiro",
@@ -73,7 +73,7 @@
           "unitId": "zumbi",
           "name": "Carne Fresca",
           "description": "Retalhos novos cobrem o fedor antigo e o corpo responde mais rápido.",
-          "cost": 900,
+          "cost": 5000,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 1
@@ -83,7 +83,7 @@
           "unitId": "zumbi",
           "name": "Mãos Calejadas",
           "description": "Dedos que nunca descansam carregam mais peso por vigília.",
-          "cost": 5400,
+          "cost": 40000,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 6
@@ -93,7 +93,7 @@
           "unitId": "zumbi",
           "name": "Sangue Pútrido",
           "description": "A seiva escura queima as veias e alimenta cada passo.",
-          "cost": 32400,
+          "cost": 320000,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 11
@@ -103,7 +103,7 @@
           "unitId": "zumbi",
           "name": "Coroa de Vermes",
           "description": "Os vermes sussurram ordens — e o zumbi obedece na hora.",
-          "cost": 194400,
+          "cost": 2560000,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 16
@@ -116,8 +116,8 @@
       "role": "Guarda sepulcral",
       "description": "Ainda lembra do juramento que fez em vida. Cumpre ordens com a lâmina que o matou.",
       "sigil": "knight",
-      "cost": 1100,
-      "costGrowth": 1.15,
+      "cost": 3000,
+      "costGrowth": 1.26,
       "produces": "gold",
       "baseRate": 14,
       "upgrades": [
@@ -126,7 +126,7 @@
           "unitId": "cavaleiro",
           "name": "Elmo Rachado",
           "description": "Aço amassado protege o crânio e intimida quem ainda respira.",
-          "cost": 9000,
+          "cost": 65000,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 1
@@ -136,7 +136,7 @@
           "unitId": "cavaleiro",
           "name": "Montaria Espectral",
           "description": "Um corcel de névoa atravessa muros e chega antes do galo cantar.",
-          "cost": 54000,
+          "cost": 520000,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 6
@@ -146,7 +146,7 @@
           "unitId": "cavaleiro",
           "name": "Lâmina Sepulcral",
           "description": "A espada guardada no túmulo nunca perdeu o fio.",
-          "cost": 324000,
+          "cost": 4160000,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 11
@@ -156,7 +156,7 @@
           "unitId": "cavaleiro",
           "name": "Juramento Negro",
           "description": "O pacto antigo multiplica a lealdade do cavaleiro.",
-          "cost": 1944000,
+          "cost": 33280000,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 16
@@ -169,8 +169,8 @@
       "role": "Aprendiz do Lich",
       "description": "Rouba a essência daqueles que já se foram e a entrega a você, gota por gota.",
       "sigil": "necromancer",
-      "cost": 12000,
-      "costGrowth": 1.15,
+      "cost": 48000,
+      "costGrowth": 1.27,
       "produces": "essence",
       "baseRate": 3,
       "upgrades": [
@@ -179,7 +179,7 @@
           "unitId": "necromante",
           "name": "Grimório Manchado",
           "description": "Páginas arrancadas de uma torre caída aceleram cada ritual.",
-          "cost": 45,
+          "cost": 240,
           "currency": "essence",
           "multiplier": 2,
           "requirement": 1
@@ -189,7 +189,7 @@
           "unitId": "necromante",
           "name": "Cajado de Osso",
           "description": "O cajado responde ao pulso de quem o empunha.",
-          "cost": 270,
+          "cost": 1920,
           "currency": "essence",
           "multiplier": 2,
           "requirement": 6
@@ -199,7 +199,7 @@
           "unitId": "necromante",
           "name": "Círculo de Sigilos",
           "description": "Runas no chão concentram a essência que vem do além.",
-          "cost": 1620,
+          "cost": 15360,
           "currency": "essence",
           "multiplier": 2,
           "requirement": 11
@@ -209,7 +209,7 @@
           "unitId": "necromante",
           "name": "Pacto com o Abismo",
           "description": "Algo lá embaixo assina o contrato — e cobra depois.",
-          "cost": 9720,
+          "cost": 122880,
           "currency": "essence",
           "multiplier": 2,
           "requirement": 16
@@ -222,8 +222,8 @@
       "role": "Demolidor",
       "description": "Costelas de gigantes amarradas por magia. Traz ossos suficientes para erguer um exército.",
       "sigil": "golem",
-      "cost": 130000,
-      "costGrowth": 1.15,
+      "cost": 750000,
+      "costGrowth": 1.28,
       "produces": "bones",
       "baseRate": 40,
       "upgrades": [
@@ -232,7 +232,7 @@
           "unitId": "golem",
           "name": "Costelas de Titã",
           "description": "Ossos grandes demais para um único corpo formam a espinha do golem.",
-          "cost": 30000,
+          "cost": 350000,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 1
@@ -242,7 +242,7 @@
           "unitId": "golem",
           "name": "Núcleo de Âmbar",
           "description": "Uma pedra quente no peito move montanhas de osso.",
-          "cost": 180000,
+          "cost": 2800000,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 6
@@ -252,7 +252,7 @@
           "unitId": "golem",
           "name": "Braços de Ferro",
           "description": "Placas fundidas transformam cada golpe em demolição.",
-          "cost": 1080000,
+          "cost": 22400000,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 11
@@ -262,7 +262,7 @@
           "unitId": "golem",
           "name": "Coração de Sepultura",
           "description": "Um coração enterrado por séculos volta a bater.",
-          "cost": 6480000,
+          "cost": 179200000,
           "currency": "gold",
           "multiplier": 2,
           "requirement": 16
@@ -275,8 +275,8 @@
       "role": "Açoite alado",
       "description": "A Cripta o guardou por três invernos. Quando ele levanta voo, a essência escorre do céu.",
       "sigil": "dragon",
-      "cost": 1400000,
-      "costGrowth": 1.15,
+      "cost": 12000000,
+      "costGrowth": 1.3,
       "produces": "essence",
       "baseRate": 30,
       "upgrades": [
@@ -285,7 +285,7 @@
           "unitId": "dragao",
           "name": "Escamas Póstumas",
           "description": "Endurecidas na morte, são mais duras do que eram em vida.",
-          "cost": 180,
+          "cost": 1500,
           "currency": "essence",
           "multiplier": 2,
           "requirement": 1
@@ -295,7 +295,7 @@
           "unitId": "dragao",
           "name": "Asas Esfarrapadas",
           "description": "Membranas podres ainda erguem toneladas de osso.",
-          "cost": 1080,
+          "cost": 12000,
           "currency": "essence",
           "multiplier": 2,
           "requirement": 6
@@ -305,7 +305,7 @@
           "unitId": "dragao",
           "name": "Sopro Sepulcral",
           "description": "A chama que sai da garganta nunca aqueceu ninguém — apenas apaga.",
-          "cost": 6480,
+          "cost": 96000,
           "currency": "essence",
           "multiplier": 2,
           "requirement": 11
@@ -315,7 +315,7 @@
           "unitId": "dragao",
           "name": "Alma do Primeiro Dragão",
           "description": "A primeira chama, guardada na Cripta, volta a arder.",
-          "cost": 38880,
+          "cost": 768000,
           "currency": "essence",
           "multiplier": 2,
           "requirement": 16
@@ -330,11 +330,66 @@
       "role": "Ossos",
       "description": "A terra fofa onde você começa. Cada nível aumenta tudo o que rende ossos — inclusive suas conjurações.",
       "sigil": "cemiterio",
-      "baseCost": 250,
-      "costGrowth": 1.6,
+      "baseCost": 800,
+      "costGrowth": 1.9,
       "bonusPerLevel": 0.25,
       "effect": "bones",
-      "group": "estacoes"
+      "group": "estacoes",
+      "forms": [
+        "Covas Simples",
+        "Cemitério de Pedra",
+        "Necrópole"
+      ],
+      "improvements": [
+        {
+          "name": "Pás de Ferro",
+          "description": "Ferramentas resistentes recuperam mais ossos.",
+          "gold": 1200,
+          "bones": 400,
+          "essence": 0,
+          "multiplier": 1.25
+        },
+        {
+          "name": "Sepulturas Marcadas",
+          "description": "Marcas revelam as sepulturas mais antigas.",
+          "gold": 2400,
+          "bones": 800,
+          "essence": 0,
+          "multiplier": 1.25
+        },
+        {
+          "name": "Erguer Lápides",
+          "description": "Troque as cruzes de madeira por lápides de pedra.",
+          "gold": 8000,
+          "bones": 2400,
+          "essence": 0,
+          "multiplier": 1.5
+        },
+        {
+          "name": "Lanternas de Vigília",
+          "description": "Luzes espectrais guiam os servos pela noite.",
+          "gold": 24000,
+          "bones": 6400,
+          "essence": 15,
+          "multiplier": 1.35
+        },
+        {
+          "name": "Ossuário Organizado",
+          "description": "Cada osso encontra seu lugar nos rituais.",
+          "gold": 56000,
+          "bones": 16000,
+          "essence": 40,
+          "multiplier": 1.35
+        },
+        {
+          "name": "Consagrar Necrópole",
+          "description": "Cercas e pilares espectrais protegem a necrópole.",
+          "gold": 160000,
+          "bones": 48000,
+          "essence": 120,
+          "multiplier": 1.75
+        }
+      ]
     },
     {
       "id": "cripta",
@@ -342,23 +397,133 @@
       "role": "Criação de Monstros",
       "description": "Bancadas frias onde a carne e o osso se juntam. Cada nível multiplica o ouro trazido pelos mortos.",
       "sigil": "cripta",
-      "baseCost": 800,
-      "costGrowth": 1.7,
+      "baseCost": 3000,
+      "costGrowth": 2,
       "bonusPerLevel": 0.2,
       "effect": "gold",
-      "group": "estacoes"
+      "group": "estacoes",
+      "forms": [
+        "Entrada da Cripta",
+        "Mausoléu",
+        "Mausoléu Ancestral"
+      ],
+      "improvements": [
+        {
+          "name": "Bancadas de Pedra",
+          "description": "Bancadas firmes agilizam o trabalho dos mortos.",
+          "gold": 4500,
+          "bones": 1500,
+          "essence": 0,
+          "multiplier": 1.25
+        },
+        {
+          "name": "Selos Funerários",
+          "description": "Selos preservam o ouro trazido pelas criaturas.",
+          "gold": 9000,
+          "bones": 3000,
+          "essence": 0,
+          "multiplier": 1.25
+        },
+        {
+          "name": "Construir Mausoléu",
+          "description": "Erga um mausoléu sobre a antiga entrada.",
+          "gold": 30000,
+          "bones": 9000,
+          "essence": 0,
+          "multiplier": 1.5
+        },
+        {
+          "name": "Câmaras de Tributo",
+          "description": "Novas câmaras armazenam tesouros esquecidos.",
+          "gold": 90000,
+          "bones": 24000,
+          "essence": 27,
+          "multiplier": 1.35
+        },
+        {
+          "name": "Guardas de Pedra",
+          "description": "Guardiões protegem os tributos da cripta.",
+          "gold": 210000,
+          "bones": 60000,
+          "essence": 73,
+          "multiplier": 1.35
+        },
+        {
+          "name": "Despertar Mausoléu Ancestral",
+          "description": "Torres e gárgulas despertam a entrada ancestral.",
+          "gold": 600000,
+          "bones": 180000,
+          "essence": 218,
+          "multiplier": 1.75
+        }
+      ]
     },
     {
       "id": "acampamento",
       "name": "Acampamento",
       "role": "Recursos",
-      "description": "Caldeirão sempre fervendo. O acampamento melhora a produção geral do seu reino.",
+      "description": "A fogueira é o começo do acampamento. Seus níveis e aprimoramentos fortalecem toda a produção do reino.",
       "sigil": "acampamento",
-      "baseCost": 2500,
-      "costGrowth": 1.8,
+      "baseCost": 15000,
+      "costGrowth": 2.2,
       "bonusPerLevel": 0.15,
       "effect": "global",
-      "group": "estacoes"
+      "group": "estacoes",
+      "forms": [
+        "Fogueira",
+        "Caldeirão",
+        "Caldeirão com Carroça"
+      ],
+      "improvements": [
+        {
+          "name": "Lenha Encantada",
+          "description": "A chama permanece acesa durante toda a vigília.",
+          "gold": 22500,
+          "bones": 7500,
+          "essence": 0,
+          "multiplier": 1.25
+        },
+        {
+          "name": "Círculo de Pedras",
+          "description": "O círculo concentra o calor e a energia ritual.",
+          "gold": 45000,
+          "bones": 15000,
+          "essence": 0,
+          "multiplier": 1.25
+        },
+        {
+          "name": "Instalar Caldeirão",
+          "description": "Um caldeirão de ferro passa a ferver sobre a fogueira.",
+          "gold": 150000,
+          "bones": 45000,
+          "essence": 0,
+          "multiplier": 1.5
+        },
+        {
+          "name": "Mistura de Almas",
+          "description": "Uma receita espectral fortalece todo o exército.",
+          "gold": 450000,
+          "bones": 120000,
+          "essence": 56,
+          "multiplier": 1.35
+        },
+        {
+          "name": "Provisões do Vale",
+          "description": "Barriletes e sacos abastecem os trabalhadores.",
+          "gold": 1050000,
+          "bones": 300000,
+          "essence": 150,
+          "multiplier": 1.35
+        },
+        {
+          "name": "Adicionar Carroça",
+          "description": "Uma carroça de suprimentos se junta ao caldeirão.",
+          "gold": 3000000,
+          "bones": 900000,
+          "essence": 449,
+          "multiplier": 1.75
+        }
+      ]
     },
     {
       "id": "forja",
@@ -366,11 +531,66 @@
       "role": "Upgrades",
       "description": "A bigorna que nunca esfria destila essência das almas mais teimosas.",
       "sigil": "forja",
-      "baseCost": 9000,
-      "costGrowth": 1.9,
+      "baseCost": 60000,
+      "costGrowth": 2.3,
       "bonusPerLevel": 0.3,
       "effect": "essence",
-      "group": "estacoes"
+      "group": "estacoes",
+      "forms": [
+        "Bigorna e Braseiro",
+        "Forno Sombrio",
+        "Oficina Sombria"
+      ],
+      "improvements": [
+        {
+          "name": "Martelo Ritual",
+          "description": "Golpes rituais libertam a essência presa ao metal.",
+          "gold": 90000,
+          "bones": 30000,
+          "essence": 0,
+          "multiplier": 1.25
+        },
+        {
+          "name": "Carvão de Sepultura",
+          "description": "Carvão antigo alimenta o pequeno braseiro.",
+          "gold": 180000,
+          "bones": 60000,
+          "essence": 0,
+          "multiplier": 1.25
+        },
+        {
+          "name": "Construir Forno",
+          "description": "Um forno de pedra concentra as chamas da forja.",
+          "gold": 600000,
+          "bones": 180000,
+          "essence": 0,
+          "multiplier": 1.5
+        },
+        {
+          "name": "Foles Encantados",
+          "description": "Foles encantados mantêm a temperatura do forno.",
+          "gold": 1800000,
+          "bones": 480000,
+          "essence": 105,
+          "multiplier": 1.35
+        },
+        {
+          "name": "Ferramentas Seladas",
+          "description": "Ferramentas com sigilos extraem mais essência.",
+          "gold": 4200000,
+          "bones": 1200000,
+          "essence": 279,
+          "multiplier": 1.35
+        },
+        {
+          "name": "Expandir Oficina",
+          "description": "Uma oficina coberta reúne forno, bigorna e ferramentas.",
+          "gold": 12000000,
+          "bones": 3600000,
+          "essence": 837,
+          "multiplier": 1.75
+        }
+      ]
     },
     {
       "id": "torre",
@@ -378,11 +598,66 @@
       "role": "Melhorias Gerais",
       "description": "Seu posto de comando. Cada nível concede mais ossos a cada conjuração no Cemitério.",
       "sigil": "torre",
-      "baseCost": 150,
-      "costGrowth": 2.2,
+      "baseCost": 500,
+      "costGrowth": 2.6,
       "bonusPerLevel": 1,
       "effect": "click",
-      "group": "outros"
+      "group": "outros",
+      "forms": [
+        "Cabana Ritual",
+        "Torre de Pedra",
+        "Torre do Lich"
+      ],
+      "improvements": [
+        {
+          "name": "Velas de Vigília",
+          "description": "Velas fortalecem cada conjuração no cemitério.",
+          "gold": 750,
+          "bones": 250,
+          "essence": 0,
+          "multiplier": 1.25
+        },
+        {
+          "name": "Grimório de Iniciação",
+          "description": "Anotações antigas revelam gestos mais eficientes.",
+          "gold": 1500,
+          "bones": 500,
+          "essence": 0,
+          "multiplier": 1.25
+        },
+        {
+          "name": "Erguer Torre de Pedra",
+          "description": "Substitua a pequena cabana por uma torre de pedra.",
+          "gold": 5000,
+          "bones": 1500,
+          "essence": 0,
+          "multiplier": 1.5
+        },
+        {
+          "name": "Cristais de Foco",
+          "description": "Cristais concentram o poder de conjuração.",
+          "gold": 15000,
+          "bones": 4000,
+          "essence": 12,
+          "multiplier": 1.35
+        },
+        {
+          "name": "Runas Superiores",
+          "description": "Runas superiores ampliam os rituais do necromante.",
+          "gold": 35000,
+          "bones": 10000,
+          "essence": 32,
+          "multiplier": 1.35
+        },
+        {
+          "name": "Coroar Torre do Lich",
+          "description": "A torre ganha ameias e um cristal espectral no topo.",
+          "gold": 100000,
+          "bones": 30000,
+          "essence": 97,
+          "multiplier": 1.75
+        }
+      ]
     },
     {
       "id": "portal",
@@ -390,11 +665,66 @@
       "role": "Novas Regiões",
       "description": "Uma fenda para reinos onde a morte já venceu. Cada nível amplifica toda a sua produção.",
       "sigil": "portal",
-      "baseCost": 250000,
-      "costGrowth": 3.2,
+      "baseCost": 1500000,
+      "costGrowth": 3.6,
       "bonusPerLevel": 0.5,
       "effect": "global",
-      "group": "outros"
+      "group": "outros",
+      "forms": [
+        "Pedras Adormecidas",
+        "Portal Desperto",
+        "Portal das Sombras"
+      ],
+      "improvements": [
+        {
+          "name": "Restaurar Runas",
+          "description": "Runas esquecidas começam a reagir ao reino.",
+          "gold": 2250000,
+          "bones": 750000,
+          "essence": 0,
+          "multiplier": 1.25
+        },
+        {
+          "name": "Alinhar Monólitos",
+          "description": "Pedras alinhadas canalizam a produção do vale.",
+          "gold": 4500000,
+          "bones": 1500000,
+          "essence": 0,
+          "multiplier": 1.25
+        },
+        {
+          "name": "Despertar Portal",
+          "description": "Um vórtice espectral se abre entre as pedras.",
+          "gold": 15000000,
+          "bones": 4500000,
+          "essence": 0,
+          "multiplier": 1.5
+        },
+        {
+          "name": "Âncoras de Essência",
+          "description": "Âncoras mantêm o vínculo com os reinos distantes.",
+          "gold": 45000000,
+          "bones": 12000000,
+          "essence": 446,
+          "multiplier": 1.35
+        },
+        {
+          "name": "Sigilos do Além",
+          "description": "Sigilos canalizam a energia vinda do além.",
+          "gold": 105000000,
+          "bones": 30000000,
+          "essence": 1188,
+          "multiplier": 1.35
+        },
+        {
+          "name": "Estabilizar Portal das Sombras",
+          "description": "Obeliscos e um arco reforçado estabilizam a passagem.",
+          "gold": 300000000,
+          "bones": 90000000,
+          "essence": 3565,
+          "multiplier": 1.75
+        }
+      ]
     }
   ],
   "automation": [
@@ -404,8 +734,8 @@
       "role": "Conjuração automática",
       "description": "Uma mão cortada do próprio cemitério. Conjura sozinha, sem pausa e sem reclamar.",
       "sigil": "hand",
-      "cost": 5,
-      "costGrowth": 1.45,
+      "cost": 15,
+      "costGrowth": 1.65,
       "clicksPerSecond": 1
     },
     {
@@ -414,8 +744,8 @@
       "role": "Conjuração automática",
       "description": "Um espírito acorrentado ao vale. Trabalha a vigília inteira por um punhado de essência.",
       "sigil": "spirit",
-      "cost": 40,
-      "costGrowth": 1.5,
+      "cost": 150,
+      "costGrowth": 1.75,
       "clicksPerSecond": 4
     },
     {
@@ -424,8 +754,8 @@
       "role": "Conjuração automática",
       "description": "Aprendizes vivos que trocaram a voz pelo ofício. Conjuram em fila, sem errar um gesto.",
       "sigil": "person",
-      "cost": 300,
-      "costGrowth": 1.55,
+      "cost": 1500,
+      "costGrowth": 1.85,
       "clicksPerSecond": 15
     },
     {
@@ -434,8 +764,8 @@
       "role": "Conjuração automática",
       "description": "Um necromante que já venceu a própria morte. Conjura enquanto você dorme.",
       "sigil": "necromancer",
-      "cost": 2000,
-      "costGrowth": 1.6,
+      "cost": 12000,
+      "costGrowth": 1.95,
       "clicksPerSecond": 60
     }
   ],
@@ -444,49 +774,49 @@
       "id": "esqueletos-5",
       "text": "Construa 5 Esqueletos",
       "target": 5,
-      "reward": 150
+      "reward": 80
     },
     {
       "id": "cliques-25",
       "text": "Conjure 25 vezes no Cemitério",
       "target": 25,
-      "reward": 300
+      "reward": 150
     },
     {
       "id": "cemiterio-3",
       "text": "Melhore o Cemitério para o nível 3",
       "target": 3,
-      "reward": 600
+      "reward": 300
     },
     {
       "id": "zumbis-5",
       "text": "Erga 5 Zumbis",
       "target": 5,
-      "reward": 1200
+      "reward": 600
     },
     {
       "id": "nivel-5",
       "text": "Alcance o Nível 5",
       "target": 5,
-      "reward": 4000
+      "reward": 2000
     },
     {
       "id": "cavaleiros-10",
       "text": "Comande 10 Cavaleiros Mortos",
       "target": 10,
-      "reward": 18000
+      "reward": 9000
     },
     {
       "id": "cripta-5",
       "text": "Melhore a Cripta para o nível 5",
       "target": 5,
-      "reward": 45000
+      "reward": 20000
     },
     {
       "id": "portal-1",
       "text": "Abra o Portal das Sombras",
       "target": 1,
-      "reward": 250000
+      "reward": 125000
     }
   ],
   "achievements": [

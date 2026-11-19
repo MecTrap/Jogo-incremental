@@ -34,6 +34,15 @@ namespace NecromanteInc
     {
         public string id, name, role, description, effect, group;
         public double baseCost, costGrowth, bonusPerLevel;
+        public string[] forms;
+        public StationImprovement[] improvements;
+    }
+
+    [Serializable]
+    public class StationImprovement
+    {
+        public string name, description;
+        public double gold, bones, essence, multiplier;
     }
 
     [Serializable]
@@ -63,10 +72,12 @@ namespace NecromanteInc
         public double gold, bones, essence, totalGold, xp;
         public int clicks, purchases, objectiveIndex;
         public int level = 1;
-        public int[] units, stations, automation;
+        public int[] units, stations, automation, stationImprovements;
         public string[] upgrades;
         public bool sound = true;
         public long lastSeen;
+        public double eternalSouls;
+        public int prestigeCount;
 
         public double Balance(string resource) => resource == "gold" ? gold : resource == "bones" ? bones : essence;
 
@@ -98,6 +109,8 @@ namespace NecromanteInc
 
     public sealed class Game
     {
+        public const int PrestigeLevel = 10;
+        public const double SoulBonus = 0.10;
         public readonly Catalog Data;
         public GameState State { get; private set; }
 
@@ -109,13 +122,34 @@ namespace NecromanteInc
             State.objectiveIndex = Math.Max(0, Math.Min(data.objectives.Length, State.objectiveIndex));
             Array.Resize(ref State.units, data.units.Length);
             Array.Resize(ref State.stations, data.stations.Length);
+            // Saves anteriores começam na aparência inicial e mantêm todos os níveis comprados.
+            Array.Resize(ref State.stationImprovements, data.stations.Length);
             Array.Resize(ref State.automation, data.automation.Length);
             State.upgrades ??= Array.Empty<string>();
         }
 
-        public static double XpNeeded(int level) => Round(100 * Math.Pow(level, 1.5));
+        public static double XpNeeded(int level) => Round(125 * Math.Pow(level, 1.5));
         private static double Round(double value) => Math.Floor(value + 0.5);
         private double LevelMultiplier => 1 + (State.level - 1) * 0.05;
+        public double PrestigeMultiplier => 1 + State.eternalSouls * SoulBonus;
+        public bool CanPrestige => State.level >= PrestigeLevel;
+        public double PrestigeGain => CanPrestige ?
+            1 + Math.Floor(Math.Log10(1 + Math.Max(0, State.totalGold) / 1_000_000) / 2) +
+            (State.level - PrestigeLevel) / 5 : 0;
+
+        public bool Prestige()
+        {
+            if (!CanPrestige) return false;
+            var next = new GameState
+            {
+                eternalSouls = State.eternalSouls + PrestigeGain,
+                prestigeCount = State.prestigeCount + 1,
+                sound = State.sound,
+                lastSeen = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+            };
+            State = new Game(Data, next).State;
+            return true;
+        }
 
         public double Effect(string effect)
         {
@@ -124,7 +158,7 @@ namespace NecromanteInc
             {
                 Station station = Data.stations[i];
                 if (station.effect == effect)
-                    result *= 1 + State.stations[i] * station.bonusPerLevel;
+                    result *= (1 + State.stations[i] * station.bonusPerLevel) * StationMultiplier(i);
             }
             return result;
         }
@@ -138,9 +172,9 @@ namespace NecromanteInc
                 {
                     Station station = Data.stations[i];
                     if (station.effect == "click")
-                        basePower += State.stations[i] * station.bonusPerLevel;
+                        basePower += (1 + State.stations[i] * station.bonusPerLevel) * StationMultiplier(i) - 1;
                 }
-                return basePower * Effect("bones") * Effect("global") * LevelMultiplier;
+                return basePower * Effect("bones") * Effect("global") * LevelMultiplier * PrestigeMultiplier;
             }
         }
 
@@ -163,7 +197,7 @@ namespace NecromanteInc
             double rate = unit.baseRate;
             foreach (Upgrade upgrade in unit.upgrades)
                 if (HasUpgrade(upgrade)) rate *= upgrade.multiplier;
-            return rate * Effect(unit.produces) * Effect("global") * LevelMultiplier;
+            return rate * Effect(unit.produces) * Effect("global") * LevelMultiplier * PrestigeMultiplier;
         }
 
         public Production Rates()
@@ -242,6 +276,56 @@ namespace NecromanteInc
             if (!Spend("gold", StationCost(index))) return false;
             State.stations[index]++;
             FinishAction(10);
+            return true;
+        }
+
+        public bool HasStationImprovement(int index, int slot) =>
+            (State.stationImprovements[index] & (1 << slot)) != 0;
+
+        public int StationForm(int index)
+        {
+            if (HasStationImprovement(index, 5)) return 2;
+            return HasStationImprovement(index, 2) ? 1 : 0;
+        }
+
+        public double StationMultiplier(int index)
+        {
+            double multiplier = 1;
+            StationImprovement[] improvements = Data.stations[index].improvements;
+            if (improvements == null) return multiplier;
+            for (int slot = 0; slot < improvements.Length; slot++)
+                if (HasStationImprovement(index, slot)) multiplier *= improvements[slot].multiplier;
+            return multiplier;
+        }
+
+        public bool CanBuyStationImprovement(int index, int slot)
+        {
+            StationImprovement[] improvements = Data.stations[index].improvements;
+            if (improvements == null || slot < 0 || slot >= improvements.Length ||
+                HasStationImprovement(index, slot) || slot / 3 != StationForm(index))
+                return false;
+
+            int first = slot / 3 * 3;
+            if (slot % 3 == 2 &&
+                (!HasStationImprovement(index, first) || !HasStationImprovement(index, first + 1)))
+                return false;
+
+            StationImprovement improvement = improvements[slot];
+            return State.gold >= improvement.gold && State.bones >= improvement.bones &&
+                State.essence >= improvement.essence;
+        }
+
+        public bool BuyStationImprovement(int index, int slot)
+        {
+            if (!CanBuyStationImprovement(index, slot)) return false;
+            StationImprovement improvement = Data.stations[index].improvements[slot];
+            // Valida todos os saldos antes de descontar qualquer recurso.
+            State.gold -= improvement.gold;
+            State.bones -= improvement.bones;
+            State.essence -= improvement.essence;
+            State.stationImprovements[index] |= 1 << slot;
+            State.purchases++;
+            FinishAction(slot % 3 == 2 ? 30 : 15);
             return true;
         }
 
