@@ -22,3 +22,11 @@ Cada um dos cinco primeiros prestígios recupera uma parte do **Senhor das Treva
 São **33 objetivos e 46 conquistas**, com contadores e barras de progresso. As 25 missões paralelas podem ser cumpridas em qualquer ordem e concedem ouro e XP uma vez por ciclo. As conquistas desbloqueadas são preservadas nos prestígios.
 
 Veja as [instruções do projeto Unity](NecromanteIncUnity/README.md) para jogar, editar e gerar um executável.
+
+## Versão DEV para apresentação
+
+O projeto independente está na pasta [NecromanteIncUnityDev](NecromanteIncUnityDev). Ele inclui um painel com botões para adicionar ouro, ossos, essência, Almas Eternas e XP, em três quantidades, além de atalhos para preparar o prestígio, visualizar os quadrinhos e reiniciar a apresentação. O painel pode ser recolhido.
+
+[Baixar a versão DEV para Windows](https://github.com/MecTrap/Jogo-incremental/raw/refs/heads/main/downloads/NecromanteInc-DEV-Windows.zip)
+
+Extraia o ZIP completo e abra **Windows-DEV/NecromanteInc-DEV.exe**. O aplicativo e seu salvamento são separados dos da versão principal. Veja o [roteiro de apresentação e as instruções DEV](NecromanteIncUnityDev/README.md).
