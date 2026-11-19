@@ -17,4 +17,8 @@ Ela inclui produção de recursos, monstros, evolução, automação, missões, 
 
 O download atual inclui ícones próprios para os seis monstros e as quatro moedas, duas evoluções visuais para cada estrutura, a trilha **Relógio de Areia** com controle de volume e uma economia mais lenta. O **Prestígio** libera no nível 10 e concede **Almas Eternas**, cada uma com +10% de geração permanente.
 
+Cada um dos cinco primeiros prestígios recupera uma parte do **Senhor das Trevas**. Ao reunir as cinco, o ritual de renascimento aparece em uma sequência de quadrinhos com três páginas. Concluir o final retorna à tela inicial, onde é possível rever a história ou continuar o reino.
+
+São **33 objetivos e 46 conquistas**, com contadores e barras de progresso. As 25 missões paralelas podem ser cumpridas em qualquer ordem e concedem ouro e XP uma vez por ciclo. As conquistas desbloqueadas são preservadas nos prestígios.
+
 Veja as [instruções do projeto Unity](NecromanteIncUnity/README.md) para jogar, editar e gerar um executável.

@@ -15,6 +15,13 @@ namespace NecromanteInc
         private static readonly CultureInfo Locale = CultureInfo.GetCultureInfo("pt-BR");
         private static readonly string[] Suffixes = { "qua", "qui", "sex", "sep", "oct", "non", "dec" };
         private static readonly string[] Tabs = { "Monstros", "Estações", "Loja" };
+        private static readonly string[] EndingTitles = { "As cinco relíquias", "O último ritual", "O Senhor das Trevas" };
+        private static readonly string[] EndingCaptions =
+        {
+            "Cinco renascimentos romperam os selos. Esqueletos, zumbis e cavaleiros deixam as criptas levando os restos de seu antigo senhor. O golem transporta os ossos; o necromante guarda a última relíquia: sua alma.",
+            "Sob a lua, os monstros reúnem as cinco partes sobre o altar. O necromante ergue a alma cristalizada. As runas despertam, os ossos se unem e o vale inteiro responde ao chamado.",
+            "A coroa volta a encontrar seu rei. O Senhor das Trevas abre os olhos, e sua legião se ajoelha. Após cinco renascimentos, a promessa está cumprida. O reino das sombras tem novamente um soberano."
+        };
         private static readonly Vector2[] Hotspots =
         {
             new(34, 91), // Cemitério
@@ -34,6 +41,8 @@ namespace NecromanteInc
         private AudioSource audioSource, musicSource;
         private float musicVolume;
         private bool playing, stationSelected, confirmReset, confirmPrestige, detailsCollapsed;
+        private bool showingEnding;
+        private int endingPage;
         private int tab, selection;
         private string modal;
         private double offlineSeconds;
@@ -56,7 +65,7 @@ namespace NecromanteInc
             }
 
             game = new Game(catalog, saved);
-            if (saved != null && saved.lastSeen > 0)
+            if (saved != null && saved.lastSeen > 0 && !game.EndingPending)
             {
                 double seconds = Math.Min(43_200, (Now() - saved.lastSeen) / 1000.0);
                 if (seconds > 60)
@@ -106,7 +115,8 @@ namespace NecromanteInc
             double now = Time.realtimeSinceStartupAsDouble;
             if (now - lastTick >= 0.1)
             {
-                game.Advance(Math.Min(5, now - lastTick));
+                if (!showingEnding && !game.EndingPending)
+                    game.Advance(Math.Min(5, now - lastTick));
                 lastTick = now;
                 Refresh();
             }
@@ -122,7 +132,7 @@ namespace NecromanteInc
         private void UpdateMusic()
         {
             if (musicSource.clip == null) return;
-            bool audible = playing && State.sound && musicVolume > 0;
+            bool audible = (playing || showingEnding) && State.sound && musicVolume > 0;
             if (audible && !musicSource.isPlaying) musicSource.Play();
 
             float target = audible ? musicVolume : 0;
@@ -161,6 +171,11 @@ namespace NecromanteInc
             root.Clear();
             bindings.Clear();
             world = null;
+            if (showingEnding)
+            {
+                DrawEnding();
+                return;
+            }
             if (playing) DrawGame();
             else DrawMenu();
             if (modal != null) DrawModal();
@@ -185,7 +200,11 @@ namespace NecromanteInc
                 art.style.height = MenuArtHeight * scale;
             });
 
-            MenuButton(art, "Jogar", 368, () => { playing = true; Draw(); });
+            MenuButton(art, "Jogar", 368, () =>
+            {
+                if (game.EndingPending) BeginEnding();
+                else { playing = true; Draw(); }
+            });
             MenuButton(art, "Configurações", 455, () => Open("Configurações"));
             MenuButton(art, "Conquistas", 541, () => Open("Conquistas"));
             MenuButton(art, "Créditos", 628, () => Open("Créditos"));
@@ -194,6 +213,58 @@ namespace NecromanteInc
             MenuAmount(art, "Ouro", 1273, () => State.gold);
             MenuAmount(art, "Ossos", 1380, () => State.bones);
             MenuAmount(art, "Essência", 1475, () => State.essence);
+            if (State.endingCompleted)
+            {
+                VisualElement completion = Box(art, "ending-menu-badge");
+                Label(completion, "O SENHOR DAS TREVAS RENASCEU", "eyebrow");
+                Button(completion, "Rever o final", BeginEnding);
+            }
+        }
+
+        private void BeginEnding()
+        {
+            showingEnding = true;
+            endingPage = 0;
+            modal = null;
+            confirmPrestige = false;
+            playing = false;
+            offlineSeconds = 0;
+            Save();
+            Draw();
+        }
+
+        private void DrawEnding()
+        {
+            VisualElement screen = Box(root, "ending-screen");
+            Label(screen, "NECROMANTE INC. · O DESPERTAR", "eyebrow");
+            Label(screen, EndingTitles[endingPage], "ending-title");
+            var art = new Image
+            {
+                image = Resources.Load<Texture2D>($"Ending/page-{endingPage + 1}"),
+                scaleMode = ScaleMode.ScaleToFit,
+                pickingMode = PickingMode.Ignore
+            };
+            art.AddToClassList("ending-art");
+            screen.Add(art);
+            VisualElement narration = Box(screen, "ending-narration");
+            Label(narration, EndingCaptions[endingPage], "ending-caption");
+            VisualElement controls = Box(narration, "ending-controls");
+            Label(controls, $"{endingPage + 1} / {EndingTitles.Length}", "eyebrow");
+            if (endingPage > 0)
+                Button(controls, "Anterior", () => { endingPage--; Draw(); });
+            Button(controls, endingPage == EndingTitles.Length - 1 ? "Concluir · Tela inicial" : "Próximo quadro", () =>
+            {
+                if (endingPage < EndingTitles.Length - 1) { endingPage++; Draw(); return; }
+                game.CompleteEnding();
+                showingEnding = false;
+                playing = false;
+                lastTick = Time.realtimeSinceStartupAsDouble;
+                Save();
+                Draw();
+            }, "primary");
+            // O leitor controla o ritmo; cada página entra com uma transição suave.
+            screen.style.opacity = 0;
+            screen.schedule.Execute(() => screen.style.opacity = 1).StartingIn(30);
         }
 
         private void MenuButton(VisualElement art, string text, float y, Action action)
@@ -261,7 +332,8 @@ namespace NecromanteInc
             DrawDetails(board);
 
             VisualElement footer = Box(root, "footer");
-            Label(footer, "VALE DOS OSSOS", "eyebrow");
+            Label(footer, State.endingCompleted ? "VALE DOS OSSOS · O SENHOR DAS TREVAS RENASCEU" :
+                $"VALE DOS OSSOS · RELÍQUIAS DO SENHOR DAS TREVAS {game.CollectedLordParts}/{Game.LordPartCount}", "eyebrow");
         }
 
         private void DrawObjective(VisualElement header)
@@ -270,10 +342,10 @@ namespace NecromanteInc
             Label(objectiveCard, "OBJETIVO ATUAL", "eyebrow");
             LiveLabel(objectiveCard, () =>
             {
-                int index = State.objectiveIndex;
-                if (index >= game.Data.objectives.Length) return "Todos os objetivos concluídos";
+                int index = game.CurrentObjectiveIndex;
+                if (index < 0) return "Todos os objetivos deste ciclo concluídos";
                 Objective objective = game.Data.objectives[index];
-                return $"{objective.text}\n{Math.Min(game.Progress(objective), objective.target)}/{objective.target}  •  +{N(objective.reward)} ouro";
+                return $"{objective.text}\n{N(Math.Min(game.Progress(objective), objective.target))}/{N(objective.target)}  •  +{N(objective.reward)} ouro";
             }, "copy");
         }
 
@@ -507,7 +579,7 @@ namespace NecromanteInc
                     });
                     if (confirmReset)
                     {
-                        Label(content, "Apagar todo o progresso, incluindo as Almas Eternas e os bônus permanentes?", "copy");
+                        Label(content, "Apagar todo o progresso, incluindo conquistas, relíquias, final, Almas Eternas e bônus permanentes?", "copy");
                         Button(content, "Apagar progresso", () =>
                         {
                             game = new Game(game.Data);
@@ -523,24 +595,38 @@ namespace NecromanteInc
                 case "Prestígio":
                     DrawPrestige(content);
                     break;
+                case "Relíquia recuperada":
+                    Label(content, Game.LordParts[game.CollectedLordParts - 1], "heading");
+                    Label(content, $"Uma parte do Senhor das Trevas foi recuperada e guardada para o ritual. Relíquias reunidas: {game.CollectedLordParts}/{Game.LordPartCount}.", "copy");
+                    Label(content, "A cada renascimento, a legião se aproxima de trazer seu soberano de volta. Reúna as cinco partes para testemunhar o despertar.", "copy");
+                    Button(content, "Continuar o reino", () => Open(null), "primary");
+                    break;
                 case "Conquistas":
+                    LiveLabel(content, () => $"{AchievementCount()}/{game.Data.achievements.Length} conquistas desbloqueadas", "gold");
+                    Label(content, "As conquistas desbloqueadas ficam registradas entre renascimentos. Metas de produção, exército e construções devem ser atingidas em um mesmo ciclo.", "copy");
                     foreach (Achievement achievement in game.Data.achievements)
                     {
                         VisualElement card = Box(content, "card");
                         LiveLabel(card, () => $"{achievement.name}  •  {(game.Unlocked(achievement) ? "Desbloqueada" : "Bloqueada")}", "subheading");
                         Label(card, achievement.description, "copy");
+                        GoalProgress(card, () => game.AchievementProgress(achievement), () => game.AchievementTarget(achievement));
                     }
                     break;
                 case "Missões":
+                    LiveLabel(content, () => $"{ObjectiveCount()}/{game.Data.objectives.Length} objetivos concluídos neste ciclo", "gold");
+                    Label(content, "A jornada principal segue uma sequência. As missões paralelas podem ser cumpridas em qualquer ordem, desde o início do ciclo. As recompensas são recebidas automaticamente uma vez por ciclo.", "copy");
                     for (int i = 0; i < game.Data.objectives.Length; i++)
                     {
                         int index = i;
                         Objective objective = game.Data.objectives[i];
+                        if (i == 0) Label(content, "Jornada principal", "heading");
+                        if (i == game.MainObjectiveCount) Label(content, "Missões paralelas · escolha seu caminho", "heading");
                         VisualElement card = Box(content, "card");
                         Label(card, objective.text, "subheading");
-                        LiveLabel(card, () => (index < State.objectiveIndex ? "Concluído" :
-                            $"{Math.Min(game.Progress(objective), objective.target)}/{objective.target}") +
-                            $"  •  +{N(objective.reward)} ouro", "gold");
+                        LiveLabel(card, () => (game.ObjectiveCompleted(index) ? "Concluído · recompensa recebida" :
+                            !objective.optional && index != State.objectiveIndex ? "Aguarda os objetivos anteriores" : "Em andamento") +
+                            $"  •  +{N(objective.reward)} ouro · +{(objective.optional ? 10 : 25)} XP", "gold");
+                        GoalProgress(card, () => game.ObjectiveCompleted(index) ? objective.target : game.Progress(objective), () => objective.target);
                     }
                     break;
                 case "Créditos":
@@ -567,6 +653,12 @@ namespace NecromanteInc
         private void DrawPrestige(VisualElement content)
         {
             Label(content, "Renascimento do reino", "subheading");
+            Label(content, "O despertar do Senhor das Trevas", "heading");
+            Label(content, "Cada um dos cinco primeiros renascimentos recupera uma parte do antigo soberano. Ao reunir a quinta, sua legião realizará o ritual final.", "copy");
+            for (int i = 0; i < Game.LordPartCount; i++)
+                Label(content, $"{(i < game.CollectedLordParts ? "[Reunida]" : "[Selada]")} {i + 1}. {Game.LordParts[i]}",
+                    i < game.CollectedLordParts ? "souls" : "muted");
+            if (State.endingCompleted) Label(content, "Ritual concluído. O Senhor das Trevas renasceu. Você pode continuar desenvolvendo seu reino.", "gold");
             Label(content, $"Disponível a partir do nível {Game.PrestigeLevel}. Cada Alma Eterna concede +{N(Game.SoulBonus * 100)}% de geração permanente para ouro, ossos, essência e conjurações.", "copy");
             LiveLabel(content, () => $"Almas Eternas  {N(State.eternalSouls)}\nBônus permanente  +{N(State.eternalSouls * (Game.SoulBonus * 100))}%\nRenascimentos  {State.prestigeCount}", "souls");
             LiveLabel(content, () => game.CanPrestige ? "Renascimento disponível" :
@@ -576,10 +668,15 @@ namespace NecromanteInc
             Label(content, "Produzir mais ouro e alcançar níveis mais altos aumenta a recompensa. As Almas Eternas se acumulam a cada renascimento.", "muted");
             if (confirmPrestige)
             {
-                Label(content, "Confirmar o renascimento? Ouro, ossos, essência, nível, XP, monstros, estações, aprimoramentos, automação e missões deste ciclo voltam ao início. Suas Almas Eternas e configurações de som são preservadas.", "copy");
+                Label(content, "Confirmar o renascimento? Ouro, ossos, essência, nível, XP, monstros, estações, aprimoramentos, automação e missões deste ciclo voltam ao início. Conquistas desbloqueadas, relíquias, Almas Eternas e configurações de som são preservadas.", "copy");
+                if (game.CollectedLordParts < Game.LordPartCount)
+                    Label(content, game.CollectedLordParts == Game.LordPartCount - 1 ?
+                        "Este é o quinto renascimento: a última parte será recuperada e o ritual final começará." :
+                        $"Relíquia deste renascimento: {Game.LordParts[game.CollectedLordParts]}", "souls");
                 LiveButton(content, () => $"Confirmar · +{N(game.PrestigeGain)} Almas Eternas",
                     () => game.CanPrestige, () =>
                     {
+                        int previousParts = game.CollectedLordParts;
                         if (!game.Prestige()) return;
                         offlineSeconds = 0;
                         selection = 0;
@@ -587,13 +684,38 @@ namespace NecromanteInc
                         tab = 0;
                         playing = true;
                         Save();
-                        Open(null);
+                        if (game.EndingPending) BeginEnding();
+                        else Open(game.CollectedLordParts > previousParts ? "Relíquia recuperada" : null);
                     }, "primary");
                 Button(content, "Cancelar", () => Open("Prestígio"));
             }
             else
                 LiveButton(content, () => game.CanPrestige ? "Preparar renascimento" : $"Requer nível {Game.PrestigeLevel}",
                     () => game.CanPrestige, () => { confirmPrestige = true; Draw(); }, "primary");
+        }
+
+        private int AchievementCount()
+        {
+            int count = 0;
+            foreach (Achievement achievement in game.Data.achievements) if (game.Unlocked(achievement)) count++;
+            return count;
+        }
+
+        private int ObjectiveCount()
+        {
+            int count = 0;
+            for (int i = 0; i < game.Data.objectives.Length; i++) if (game.ObjectiveCompleted(i)) count++;
+            return count;
+        }
+
+        private void GoalProgress(VisualElement parent, Func<double> progress, Func<double> target)
+        {
+            VisualElement row = Box(parent, "goal-progress");
+            VisualElement track = Box(row, "goal-track");
+            VisualElement fill = Box(track, "goal-fill");
+            LiveLabel(row, () => $"{N(Math.Min(progress(), target()))}/{N(target())}", "goal-value");
+            bindings.Add(() => fill.style.width = Length.Percent(
+                100f * Mathf.Clamp01((float)(progress() / Math.Max(1, target())))));
         }
 
         private string Wallet() => $"{N(State.gold)} ouro  •  {N(State.bones)} ossos  •  {N(State.essence)} essência";

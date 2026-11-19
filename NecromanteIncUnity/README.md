@@ -41,3 +41,21 @@ O renascimento exige confirmação e reinicia os recursos, nível, XP, criaturas
 A recompensa parte de uma alma, cresce gradualmente com o ouro produzido no ciclo e aumenta a cada cinco níveis acima do nível 10. Os custos das compras e a curva de XP foram elevados para alongar o desenvolvimento do reino.
 
 Em uma simulação com dois cliques por segundo e compras frequentes por eficiência, o primeiro Necromante chegou em aproximadamente 38 minutos, a primeira evolução de estrutura em 19 minutos e o primeiro prestígio em 70 minutos. Esses tempos variam com a frequência dos cliques, as compras escolhidas e o tempo offline. Saves antigos conservam os recursos e itens já adquiridos e passam a usar os novos custos nas próximas compras.
+
+## Final: o despertar do Senhor das Trevas
+
+Cada um dos cinco primeiros prestígios concede uma relíquia permanente: Crânio Coroado, Tórax Ancestral, Braços do Conquistador, Pernas do Soberano e Alma das Trevas. A coleção aparece na aba Prestígio e seu total fica no rodapé do mapa.
+
+O quinto renascimento inicia o final ilustrado em três páginas, com dois quadros por página: coleta das partes, ritual e despertar. Use Próximo quadro e Anterior para ler no seu ritmo; Concluir retorna à tela inicial e registra a conclusão. Há uma transição suave entre páginas e a trilha respeita as configurações de volume.
+
+Se o jogo for fechado durante o final, Jogar reinicia a sequência até ela ser concluída. Saves anteriores com cinco ou mais prestígios também desbloqueiam o final. Após assistir, o menu oferece Rever o final; Jogar permite continuar o reino e novos prestígios preservam a conclusão, sem repetir o ritual automaticamente. Redefinir progresso apaga também a coleção e o final. As Almas Eternas continuam sendo concedidas normalmente.
+
+Arte original gerada para esta atualização em Assets/Resources/Ending; a narrativa fica em texto separado para garantir a leitura.
+
+## Missões e conquistas
+
+Há 33 objetivos: os 8 originais da jornada principal e 25 missões paralelas, disponíveis desde o início e concluídas em qualquer ordem. As missões paralelas cobrem criaturas, evolução na Cripta, aprimoramentos, mudanças visuais, automação, produção e nível. Cada uma concede ouro e 10 XP automaticamente, uma única vez por ciclo; a jornada original continua concedendo 25 XP por etapa. Produção offline também pode concluir objetivos. As missões e a contagem de evoluções de monstros reiniciam no prestígio.
+
+As 46 conquistas têm contadores e barras de progresso. Uma vez obtidas, são preservadas no salvamento e em todos os prestígios, incluindo conquistas de cada relíquia e da conclusão do final. Redefinir progresso apaga também as conquistas. Saves antigos mantêm a ordem e a conclusão dos 8 objetivos originais; as novas missões passam a considerar as condições atuais. Conquistas da versão antiga que ainda satisfaçam seus requisitos são registradas na primeira abertura desta versão.
+
+As recompensas de missões não contam como ouro produzido. As missões paralelas não bloqueiam o prestígio nem o final. Os textos explicam quando uma meta exige saldo em caixa, criaturas ao mesmo tempo ou progresso dentro de um único ciclo.

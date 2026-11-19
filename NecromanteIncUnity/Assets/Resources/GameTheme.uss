@@ -391,3 +391,28 @@
 .details.details-collapsed { width: 40px; }
 .compact .objective { width: 205px; }
 .compact .station-map-label { font-size: 10px; padding: 2px 3px; }
+
+/* Final em quadrinhos: arte inteira e narrativa separada para manter a leitura. */
+.ending-screen {
+    flex-grow: 1;
+    min-height: 0;
+    align-items: center;
+    padding: 12px 24px;
+    background-color: #060d12;
+    transition-property: opacity;
+    transition-duration: 0.6s;
+}
+.ending-title { font-size: 26px; color: #efcf8a; -unity-font-style: bold; margin-bottom: 8px; }
+.ending-art { flex-grow: 1; flex-shrink: 1; min-height: 60px; width: 100%; max-width: 1200px; }
+.ending-narration { width: 100%; max-width: 1120px; flex-shrink: 0; padding: 12px 16px; background-color: #142125; border-top-width: 1px; border-top-color: #776445; }
+.ending-caption { white-space: normal; font-size: 16px; color: #eee3cc; margin-bottom: 10px; }
+.ending-controls { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: flex-end; }
+.ending-controls .eyebrow { flex-grow: 1; }
+.ending-menu-badge { position: absolute; left: 3%; bottom: 7%; padding: 10px; background-color: rgba(6, 13, 18, 0.9); border-radius: 6px; }
+.compact .ending-title { font-size: 21px; }
+.compact .ending-caption { font-size: 14px; }
+
+.goal-progress { flex-direction: row; align-items: center; margin: 6px 0 3px 0; }
+.goal-track { flex-grow: 1; height: 7px; background-color: #0a1418; border-radius: 4px; overflow: hidden; }
+.goal-fill { height: 100%; background-color: #70b4a4; border-radius: 4px; transition-property: width; transition-duration: 0.2s; }
+.goal-value { min-width: 85px; margin-left: 10px; font-size: 12px; color: #a9bbb7; -unity-text-align: middle-right; }

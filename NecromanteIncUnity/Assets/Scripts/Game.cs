@@ -56,6 +56,8 @@ namespace NecromanteInc
     public class Objective
     {
         public string id, text;
+        public string metric, subject;
+        public bool optional;
         public int target;
         public double reward;
     }
@@ -64,6 +66,8 @@ namespace NecromanteInc
     public class Achievement
     {
         public string id, name, description;
+        public string metric, subject;
+        public double target;
     }
 
     [Serializable]
@@ -78,6 +82,9 @@ namespace NecromanteInc
         public long lastSeen;
         public double eternalSouls;
         public int prestigeCount;
+        public bool endingCompleted;
+        public string[] completedObjectives, achievements;
+        public int evolutions;
 
         public double Balance(string resource) => resource == "gold" ? gold : resource == "bones" ? bones : essence;
 
@@ -110,6 +117,9 @@ namespace NecromanteInc
     public sealed class Game
     {
         public const int PrestigeLevel = 10;
+        public const int LordPartCount = 5;
+        public static readonly string[] LordParts =
+            { "Crânio Coroado", "Tórax Ancestral", "Braços do Conquistador", "Pernas do Soberano", "Alma das Trevas" };
         public const double SoulBonus = 0.10;
         public readonly Catalog Data;
         public GameState State { get; private set; }
@@ -119,20 +129,48 @@ namespace NecromanteInc
             Data = data;
             State = saved ?? new GameState();
             State.level = Math.Max(1, State.level);
-            State.objectiveIndex = Math.Max(0, Math.Min(data.objectives.Length, State.objectiveIndex));
+            State.objectiveIndex = Math.Max(0, Math.Min(MainObjectiveCount, State.objectiveIndex));
             Array.Resize(ref State.units, data.units.Length);
             Array.Resize(ref State.stations, data.stations.Length);
             // Saves anteriores começam na aparência inicial e mantêm todos os níveis comprados.
             Array.Resize(ref State.stationImprovements, data.stations.Length);
             Array.Resize(ref State.automation, data.automation.Length);
             State.upgrades ??= Array.Empty<string>();
+            State.completedObjectives ??= Array.Empty<string>();
+            State.achievements ??= Array.Empty<string>();
+            CheckAchievements();
+        }
+
+        public int MainObjectiveCount
+        {
+            get
+            {
+                int first = Array.FindIndex(Data.objectives, objective => objective.optional);
+                return first >= 0 ? first : Data.objectives.Length;
+            }
+        }
+
+        public bool ObjectiveCompleted(int index) => Data.objectives[index].optional
+            ? Array.IndexOf(State.completedObjectives, Data.objectives[index].id) >= 0 : index < State.objectiveIndex;
+
+        public int CurrentObjectiveIndex
+        {
+            get
+            {
+                if (State.objectiveIndex < MainObjectiveCount) return State.objectiveIndex;
+                for (int i = MainObjectiveCount; i < Data.objectives.Length; i++)
+                    if (!ObjectiveCompleted(i)) return i;
+                return -1;
+            }
         }
 
         public static double XpNeeded(int level) => Round(125 * Math.Pow(level, 1.5));
         private static double Round(double value) => Math.Floor(value + 0.5);
         private double LevelMultiplier => 1 + (State.level - 1) * 0.05;
         public double PrestigeMultiplier => 1 + State.eternalSouls * SoulBonus;
-        public bool CanPrestige => State.level >= PrestigeLevel;
+        public int CollectedLordParts => Math.Min(LordPartCount, Math.Max(0, State.prestigeCount));
+        public bool EndingPending => CollectedLordParts == LordPartCount && !State.endingCompleted;
+        public bool CanPrestige => State.level >= PrestigeLevel && !EndingPending;
         public double PrestigeGain => CanPrestige ?
             1 + Math.Floor(Math.Log10(1 + Math.Max(0, State.totalGold) / 1_000_000) / 2) +
             (State.level - PrestigeLevel) / 5 : 0;
@@ -140,14 +178,25 @@ namespace NecromanteInc
         public bool Prestige()
         {
             if (!CanPrestige) return false;
+            CheckAchievements();
             var next = new GameState
             {
                 eternalSouls = State.eternalSouls + PrestigeGain,
                 prestigeCount = State.prestigeCount + 1,
+                endingCompleted = State.endingCompleted,
+                achievements = State.achievements,
                 sound = State.sound,
                 lastSeen = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
             };
             State = new Game(Data, next).State;
+            return true;
+        }
+
+        public bool CompleteEnding()
+        {
+            if (!EndingPending) return false;
+            State.endingCompleted = true;
+            CheckAchievements();
             return true;
         }
 
@@ -219,6 +268,8 @@ namespace NecromanteInc
             State.totalGold += gain.gold;
             State.bones += gain.bones;
             State.essence += gain.essence;
+            CheckObjectives();
+            CheckAchievements();
             return gain;
         }
 
@@ -360,11 +411,13 @@ namespace NecromanteInc
             if (target < 0 || State.units[index] < unit.evolutionCost) return false;
             State.units[index] -= unit.evolutionCost;
             State.units[target]++;
+            State.evolutions++;
             FinishAction(20);
             return true;
         }
 
-        public int Progress(Objective objective) => objective.id switch
+        public double Progress(Objective objective) => !string.IsNullOrEmpty(objective.metric)
+            ? MetricProgress(objective.metric, objective.subject) : objective.id switch
         {
             "esqueletos-5" => Units("esqueleto"),
             "cliques-25" => State.clicks,
@@ -377,7 +430,63 @@ namespace NecromanteInc
             _ => 0
         };
 
-        public bool Unlocked(Achievement achievement) => achievement.id switch
+        private double MetricProgress(string metric, string subject) => metric switch
+        {
+            "units" => Units(subject),
+            "station" => StationLevel(subject),
+            "army" => TotalUnits(),
+            "species" => Array.FindAll(State.units, count => count > 0).Length,
+            "clicks" => State.clicks,
+            "level" => State.level,
+            "gold" => State.gold,
+            "bones" => State.bones,
+            "essence" => State.essence,
+            "totalGold" => State.totalGold,
+            "upgrades" => State.upgrades.Length,
+            "improvements" => ImprovementCount(),
+            "forms" => EvolvedStationCount(1),
+            "finalForms" => EvolvedStationCount(2),
+            "automation" => AutomationCount(),
+            "autoClicks" => AutoClicks,
+            "evolutions" => State.evolutions,
+            "prestige" => State.prestigeCount,
+            "souls" => State.eternalSouls,
+            "ending" => State.endingCompleted ? 1 : 0,
+            _ => 0
+        };
+
+        private int ImprovementCount()
+        {
+            int total = 0;
+            for (int i = 0; i < Data.stations.Length; i++)
+                for (int slot = 0; slot < (Data.stations[i].improvements?.Length ?? 0); slot++)
+                    if (HasStationImprovement(i, slot)) total++;
+            return total;
+        }
+
+        private int EvolvedStationCount(int form)
+        {
+            int total = 0;
+            for (int i = 0; i < Data.stations.Length; i++) if (StationForm(i) >= form) total++;
+            return total;
+        }
+
+        private int AutomationCount()
+        {
+            int total = 0;
+            foreach (int count in State.automation) total += count;
+            return total;
+        }
+
+        public double AchievementTarget(Achievement achievement) => Math.Max(1, achievement.target);
+        public double AchievementProgress(Achievement achievement) => Unlocked(achievement)
+            ? AchievementTarget(achievement) : !string.IsNullOrEmpty(achievement.metric)
+                ? MetricProgress(achievement.metric, achievement.subject) : 0;
+
+        public bool Unlocked(Achievement achievement) => Array.IndexOf(State.achievements, achievement.id) >= 0 || AchievementCondition(achievement);
+
+        private bool AchievementCondition(Achievement achievement) => !string.IsNullOrEmpty(achievement.metric)
+            ? MetricProgress(achievement.metric, achievement.subject) >= AchievementTarget(achievement) : achievement.id switch
         {
             "primeiro-morto" => Units("esqueleto") >= 1,
             "cemiterio-cheio" => Units("esqueleto") >= 50,
@@ -390,6 +499,18 @@ namespace NecromanteInc
             "alem-portal" => StationLevel("portal") >= 1,
             _ => false
         };
+
+        private void CheckAchievements()
+        {
+            if (Data.achievements == null) return;
+            foreach (Achievement achievement in Data.achievements)
+            {
+                if (Array.IndexOf(State.achievements, achievement.id) >= 0 || !AchievementCondition(achievement)) continue;
+                int length = State.achievements.Length;
+                Array.Resize(ref State.achievements, length + 1);
+                State.achievements[length] = achievement.id;
+            }
+        }
 
         private int TotalUnits()
         {
@@ -418,13 +539,29 @@ namespace NecromanteInc
         private void FinishAction(int xp)
         {
             GrantXp(xp);
-            while (State.objectiveIndex < Data.objectives.Length)
+            CheckObjectives();
+            CheckAchievements();
+        }
+
+        private void CheckObjectives()
+        {
+            while (State.objectiveIndex < MainObjectiveCount)
             {
                 Objective objective = Data.objectives[State.objectiveIndex];
                 if (Progress(objective) < objective.target) break;
                 State.gold += objective.reward;
                 State.objectiveIndex++;
                 GrantXp(25);
+            }
+            for (int i = MainObjectiveCount; i < Data.objectives.Length; i++)
+            {
+                Objective objective = Data.objectives[i];
+                if (ObjectiveCompleted(i) || Progress(objective) < objective.target) continue;
+                int length = State.completedObjectives.Length;
+                Array.Resize(ref State.completedObjectives, length + 1);
+                State.completedObjectives[length] = objective.id;
+                State.gold += objective.reward;
+                GrantXp(10);
             }
         }
     }

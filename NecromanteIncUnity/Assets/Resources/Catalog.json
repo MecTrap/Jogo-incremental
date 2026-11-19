@@ -817,53 +817,601 @@
       "text": "Abra o Portal das Sombras",
       "target": 1,
       "reward": 125000
-    }
+    },
+      {
+        "id": "tropa-inicial",
+        "text": "Comande 10 Esqueletos",
+        "metric": "units",
+        "subject": "esqueleto",
+        "optional": true,
+        "target": 10,
+        "reward": 120
+      },
+      {
+        "id": "primeiro-zumbi",
+        "text": "Erga seu primeiro Zumbi",
+        "metric": "units",
+        "subject": "zumbi",
+        "optional": true,
+        "target": 1,
+        "reward": 100
+      },
+      {
+        "id": "guarda-sepulcral",
+        "text": "Erga seu primeiro Cavaleiro Morto",
+        "metric": "units",
+        "subject": "cavaleiro",
+        "optional": true,
+        "target": 1,
+        "reward": 300
+      },
+      {
+        "id": "ritual-iniciacao",
+        "text": "Erga seu primeiro Necromante",
+        "metric": "units",
+        "subject": "necromante",
+        "optional": true,
+        "target": 1,
+        "reward": 1800
+      },
+      {
+        "id": "demolidor-osseo",
+        "text": "Erga seu primeiro Golem de Ossos",
+        "metric": "units",
+        "subject": "golem",
+        "optional": true,
+        "target": 1,
+        "reward": 8000
+      },
+      {
+        "id": "asas-do-alem",
+        "text": "Erga seu primeiro Dragão Morto-Vivo",
+        "metric": "units",
+        "subject": "dragao",
+        "optional": true,
+        "target": 1,
+        "reward": 50000
+      },
+      {
+        "id": "comando-fortalecido",
+        "text": "Melhore a Torre do Necromante para o nível 3",
+        "metric": "station",
+        "subject": "torre",
+        "optional": true,
+        "target": 3,
+        "reward": 250
+      },
+      {
+        "id": "primeira-vigilia",
+        "text": "Melhore o Acampamento para o nível 1",
+        "metric": "station",
+        "subject": "acampamento",
+        "optional": true,
+        "target": 1,
+        "reward": 600
+      },
+      {
+        "id": "chama-sombria",
+        "text": "Melhore a Forja Sombria para o nível 1",
+        "metric": "station",
+        "subject": "forja",
+        "optional": true,
+        "target": 1,
+        "reward": 1800
+      },
+      {
+        "id": "armar-os-mortos",
+        "text": "Compre seu primeiro aprimoramento de monstro",
+        "metric": "upgrades",
+        "subject": "",
+        "optional": true,
+        "target": 1,
+        "reward": 150
+      },
+      {
+        "id": "arsenal-inicial",
+        "text": "Compre 4 aprimoramentos de monstros",
+        "metric": "upgrades",
+        "subject": "",
+        "optional": true,
+        "target": 4,
+        "reward": 700
+      },
+      {
+        "id": "canteiro-de-obras",
+        "text": "Compre 2 aprimoramentos de estruturas",
+        "metric": "improvements",
+        "subject": "",
+        "optional": true,
+        "target": 2,
+        "reward": 400
+      },
+      {
+        "id": "nova-aparencia",
+        "text": "Faça a primeira evolução visual de uma estrutura",
+        "metric": "forms",
+        "subject": "",
+        "optional": true,
+        "target": 1,
+        "reward": 900
+      },
+      {
+        "id": "obra-prima",
+        "text": "Leve uma estrutura à sua aparência final",
+        "metric": "finalForms",
+        "subject": "",
+        "optional": true,
+        "target": 1,
+        "reward": 4000
+      },
+      {
+        "id": "vale-transformado",
+        "text": "Evolua visualmente 3 estruturas",
+        "metric": "forms",
+        "subject": "",
+        "optional": true,
+        "target": 3,
+        "reward": 6000
+      },
+      {
+        "id": "reino-reconstruido",
+        "text": "Leve todas as 6 estruturas à aparência final",
+        "metric": "finalForms",
+        "subject": "",
+        "optional": true,
+        "target": 6,
+        "reward": 100000
+      },
+      {
+        "id": "ajuda-do-alem",
+        "text": "Compre seu primeiro ajudante de automação",
+        "metric": "automation",
+        "subject": "",
+        "optional": true,
+        "target": 1,
+        "reward": 250
+      },
+      {
+        "id": "ritmo-de-ritual",
+        "text": "Alcance 20 conjurações automáticas por segundo",
+        "metric": "autoClicks",
+        "subject": "",
+        "optional": true,
+        "target": 20,
+        "reward": 2500
+      },
+      {
+        "id": "tesouro-desenterrado",
+        "text": "Produza 10.000 de ouro neste ciclo",
+        "metric": "totalGold",
+        "subject": "",
+        "optional": true,
+        "target": 10000,
+        "reward": 400
+      },
+      {
+        "id": "tributo-do-vale",
+        "text": "Produza 100.000 de ouro neste ciclo",
+        "metric": "totalGold",
+        "subject": "",
+        "optional": true,
+        "target": 100000,
+        "reward": 2000
+      },
+      {
+        "id": "milhao-sombrio",
+        "text": "Produza 1.000.000 de ouro neste ciclo",
+        "metric": "totalGold",
+        "subject": "",
+        "optional": true,
+        "target": 1000000,
+        "reward": 8000
+      },
+      {
+        "id": "ritual-persistente",
+        "text": "Conjure manualmente 500 vezes neste ciclo",
+        "metric": "clicks",
+        "subject": "",
+        "optional": true,
+        "target": 500,
+        "reward": 250
+      },
+      {
+        "id": "pronto-para-renascer",
+        "text": "Alcance o nível 10",
+        "metric": "level",
+        "subject": "",
+        "optional": true,
+        "target": 10,
+        "reward": 2500
+      },
+      {
+        "id": "carne-renovada",
+        "text": "Evolua um monstro na Cripta",
+        "metric": "evolutions",
+        "subject": "",
+        "optional": true,
+        "target": 1,
+        "reward": 200
+      },
+      {
+        "id": "legiao-completa",
+        "text": "Tenha as 6 espécies de monstros no exército",
+        "metric": "species",
+        "subject": "",
+        "optional": true,
+        "target": 6,
+        "reward": 20000
+      }
   ],
   "achievements": [
     {
       "id": "primeiro-morto",
+      "metric": "units",
+      "subject": "esqueleto",
+      "target": 1,
       "name": "Primeiro Morto",
       "description": "Erga seu primeiro esqueleto."
     },
     {
       "id": "cemiterio-cheio",
+      "metric": "units",
+      "subject": "esqueleto",
+      "target": 50,
       "name": "Cemitério Cheio",
       "description": "Tenha 50 esqueletos sob seu comando."
     },
     {
       "id": "maos-calejadas",
+      "metric": "clicks",
+      "subject": "",
+      "target": 250,
       "name": "Mãos Calejadas",
       "description": "Conjure 250 vezes no Cemitério."
     },
     {
       "id": "legiao",
+      "metric": "army",
+      "subject": "",
+      "target": 100,
       "name": "Legião Ossuda",
       "description": "Some 100 criaturas em seu exército."
     },
     {
       "id": "aprendiz",
+      "metric": "units",
+      "subject": "necromante",
+      "target": 1,
       "name": "Aprendiz de Lich",
       "description": "Erga um Necromante."
     },
     {
       "id": "fortuna",
+      "metric": "gold",
+      "subject": "",
+      "target": 1000000,
       "name": "Fortuna Sombria",
       "description": "Acumule 1.000.000 de ouro em caixa."
     },
     {
       "id": "nivel-10",
+      "metric": "level",
+      "subject": "",
+      "target": 10,
       "name": "Lich Supremo",
       "description": "Alcance o Nível 10."
     },
     {
       "id": "dragao",
       "name": "O Dragão Desperta",
+      "metric": "units",
+      "subject": "dragao",
+      "target": 1,
       "description": "Erga um Dragão Morto-Vivo."
     },
     {
       "id": "alem-portal",
+      "metric": "station",
+      "subject": "portal",
+      "target": 1,
       "name": "Além do Portal",
       "description": "Abra o Portal das Sombras."
-    }
+    },
+      {
+        "id": "carne-inquieta",
+        "name": "Carne Inquieta",
+        "description": "Erga seu primeiro Zumbi.",
+        "metric": "units",
+        "subject": "zumbi",
+        "target": 1
+      },
+      {
+        "id": "juramento-sepulcral",
+        "name": "Juramento Sepulcral",
+        "description": "Erga seu primeiro Cavaleiro Morto.",
+        "metric": "units",
+        "subject": "cavaleiro",
+        "target": 1
+      },
+      {
+        "id": "colosso-osseo",
+        "name": "Colosso Ósseo",
+        "description": "Erga seu primeiro Golem de Ossos.",
+        "metric": "units",
+        "subject": "golem",
+        "target": 1
+      },
+      {
+        "id": "ceu-condenado",
+        "name": "Céu Condenado",
+        "description": "Comande 3 Dragões Mortos-Vivos ao mesmo tempo.",
+        "metric": "units",
+        "subject": "dragao",
+        "target": 3
+      },
+      {
+        "id": "exercito-das-trevas",
+        "name": "Exército das Trevas",
+        "description": "Comande 250 criaturas ao mesmo tempo.",
+        "metric": "army",
+        "subject": "",
+        "target": 250
+      },
+      {
+        "id": "bestario-completo",
+        "name": "Bestiário Completo",
+        "description": "Tenha as 6 espécies de monstros ao mesmo tempo.",
+        "metric": "species",
+        "subject": "",
+        "target": 6
+      },
+      {
+        "id": "mil-rituais",
+        "name": "Mil Rituais",
+        "description": "Conjure manualmente 1.000 vezes em um ciclo.",
+        "metric": "clicks",
+        "subject": "",
+        "target": 1000
+      },
+      {
+        "id": "incansavel",
+        "name": "Incansável",
+        "description": "Conjure manualmente 5.000 vezes em um ciclo.",
+        "metric": "clicks",
+        "subject": "",
+        "target": 5000
+      },
+      {
+        "id": "ferreiro-dos-mortos",
+        "name": "Ferreiro dos Mortos",
+        "description": "Compre um aprimoramento de monstro.",
+        "metric": "upgrades",
+        "subject": "",
+        "target": 1
+      },
+      {
+        "id": "arsenal-amaldicoado",
+        "name": "Arsenal Amaldiçoado",
+        "description": "Possua 6 aprimoramentos de monstros em um ciclo.",
+        "metric": "upgrades",
+        "subject": "",
+        "target": 6
+      },
+      {
+        "id": "arsenal-perfeito",
+        "name": "Arsenal Perfeito",
+        "description": "Compre os 24 aprimoramentos de monstros em um ciclo.",
+        "metric": "upgrades",
+        "subject": "",
+        "target": 24
+      },
+      {
+        "id": "primeira-obra",
+        "name": "Primeira Obra",
+        "description": "Compre um aprimoramento de estrutura.",
+        "metric": "improvements",
+        "subject": "",
+        "target": 1
+      },
+      {
+        "id": "mestre-de-obras",
+        "name": "Mestre de Obras",
+        "description": "Compre 12 aprimoramentos de estruturas em um ciclo.",
+        "metric": "improvements",
+        "subject": "",
+        "target": 12
+      },
+      {
+        "id": "arquiteto-do-abismo",
+        "name": "Arquiteto do Abismo",
+        "description": "Compre os 36 aprimoramentos de estruturas em um ciclo.",
+        "metric": "improvements",
+        "subject": "",
+        "target": 36
+      },
+      {
+        "id": "pedra-sobre-pedra",
+        "name": "Pedra sobre Pedra",
+        "description": "Evolua visualmente uma estrutura.",
+        "metric": "forms",
+        "subject": "",
+        "target": 1
+      },
+      {
+        "id": "vale-renovado",
+        "name": "Vale Renovado",
+        "description": "Evolua visualmente todas as 6 estruturas em um ciclo.",
+        "metric": "forms",
+        "subject": "",
+        "target": 6
+      },
+      {
+        "id": "forma-suprema",
+        "name": "Forma Suprema",
+        "description": "Leve uma estrutura à aparência final.",
+        "metric": "finalForms",
+        "subject": "",
+        "target": 1
+      },
+      {
+        "id": "imperio-eterno",
+        "name": "Império Eterno",
+        "description": "Leve as 6 estruturas à aparência final em um ciclo.",
+        "metric": "finalForms",
+        "subject": "",
+        "target": 6
+      },
+      {
+        "id": "torre-da-vigilia",
+        "name": "Torre da Vigília",
+        "description": "Alcance o nível 5 da Torre do Necromante.",
+        "metric": "station",
+        "subject": "torre",
+        "target": 5
+      },
+      {
+        "id": "acampamento-vivo",
+        "name": "A Vigília Não Termina",
+        "description": "Alcance o nível 3 do Acampamento.",
+        "metric": "station",
+        "subject": "acampamento",
+        "target": 3
+      },
+      {
+        "id": "forja-acesa",
+        "name": "Chamas do Abismo",
+        "description": "Alcance o nível 3 da Forja Sombria.",
+        "metric": "station",
+        "subject": "forja",
+        "target": 3
+      },
+      {
+        "id": "maos-invisiveis",
+        "name": "Mãos Invisíveis",
+        "description": "Compre seu primeiro ajudante de automação.",
+        "metric": "automation",
+        "subject": "",
+        "target": 1
+      },
+      {
+        "id": "ritual-sem-fim",
+        "name": "Ritual sem Fim",
+        "description": "Alcance 100 conjurações automáticas por segundo.",
+        "metric": "autoClicks",
+        "subject": "",
+        "target": 100
+      },
+      {
+        "id": "tributo-negro",
+        "name": "Tributo Negro",
+        "description": "Produza 100.000 de ouro em um ciclo.",
+        "metric": "totalGold",
+        "subject": "",
+        "target": 100000
+      },
+      {
+        "id": "magnata-do-alem",
+        "name": "Magnata do Além",
+        "description": "Produza 10.000.000 de ouro em um ciclo.",
+        "metric": "totalGold",
+        "subject": "",
+        "target": 10000000
+      },
+      {
+        "id": "oceano-de-ossos",
+        "name": "Oceano de Ossos",
+        "description": "Acumule 1.000.000 de ossos em caixa.",
+        "metric": "bones",
+        "subject": "",
+        "target": 1000000
+      },
+      {
+        "id": "reservatorio-de-almas",
+        "name": "Reservatório de Almas",
+        "description": "Acumule 10.000 de essência em caixa.",
+        "metric": "essence",
+        "subject": "",
+        "target": 10000
+      },
+      {
+        "id": "primeira-transmutacao",
+        "name": "Primeira Transmutação",
+        "description": "Evolua um monstro na Cripta.",
+        "metric": "evolutions",
+        "subject": "",
+        "target": 1
+      },
+      {
+        "id": "mestre-da-transmutacao",
+        "name": "Mestre da Transmutação",
+        "description": "Evolua monstros 10 vezes em um ciclo.",
+        "metric": "evolutions",
+        "subject": "",
+        "target": 10
+      },
+      {
+        "id": "cranio-recuperado",
+        "name": "A Coroa Aguarda",
+        "description": "Realize o primeiro prestígio e recupere o Crânio Coroado.",
+        "metric": "prestige",
+        "subject": "",
+        "target": 1
+      },
+      {
+        "id": "torax-recuperado",
+        "name": "O Peito do Soberano",
+        "description": "Realize o segundo prestígio e recupere o Tórax Ancestral.",
+        "metric": "prestige",
+        "subject": "",
+        "target": 2
+      },
+      {
+        "id": "bracos-recuperados",
+        "name": "Mãos da Conquista",
+        "description": "Realize o terceiro prestígio e recupere os Braços do Conquistador.",
+        "metric": "prestige",
+        "subject": "",
+        "target": 3
+      },
+      {
+        "id": "pernas-recuperadas",
+        "name": "O Retorno se Aproxima",
+        "description": "Realize o quarto prestígio e recupere as Pernas do Soberano.",
+        "metric": "prestige",
+        "subject": "",
+        "target": 4
+      },
+      {
+        "id": "alma-recuperada",
+        "name": "As Cinco Relíquias",
+        "description": "Realize o quinto prestígio e reúna todas as partes.",
+        "metric": "prestige",
+        "subject": "",
+        "target": 5
+      },
+      {
+        "id": "almas-eternizadas",
+        "name": "Além da Própria Morte",
+        "description": "Acumule 10 Almas Eternas.",
+        "metric": "souls",
+        "subject": "",
+        "target": 10
+      },
+      {
+        "id": "senhor-desperto",
+        "name": "O Senhor das Trevas Renasceu",
+        "description": "Conclua a sequência final do ritual.",
+        "metric": "ending",
+        "subject": "",
+        "target": 1
+      },
+      {
+        "id": "nivel-15",
+        "name": "Soberano do Vale",
+        "description": "Alcance o nível 15 em um ciclo.",
+        "metric": "level",
+        "subject": "",
+        "target": 15
+      }
   ]
 }
